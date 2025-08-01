@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Applicant Dashboard - Visa|Hub</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-storage-compat.js"></script>
+    <style>
+        .upload-card, .payment-card { margin-top: 2rem; padding: 2rem; border-radius: 10px; border: 1px solid #e0e0e0; }
+        .upload-card h5, .payment-card h5 { margin-bottom: 1rem; }
+    </style>
+</head>
+<body>
+    <div class="container py-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="fw-bold">Visa Application Dashboard</h2>
+            <button id="logoutBtn" class="btn btn-danger">Logout</button>
+        </div>
+
+        <div id="applicationStatus" class="alert d-none"></div>
+
+        <div id="applicationDetails" class="card d-none">
+            <div class="card-body">
+                <h5 class="card-title">Application Information</h5>
+                <p><strong>Full Name:</strong> <span id="fullName"></span></p>
+                <p><strong>Visa Type:</strong> <span id="visaType"></span></p>
+                <p><strong>Country:</strong> <span id="country"></span></p>
+                <p><strong>Status:</strong> <span id="statusText"></span></p>
+            </div>
+        </div>
+
+        <div id="approvedActions" class="d-none">
+            <div class="upload-card">
+                <h5 class="text-primary">Step 1: Upload Documents</h5>
+                <p id="uploadMessage" class="text-muted"></p>
+
+                <div class="mb-4">
+                    <label for="passportFile" class="form-label">International Passport</label>
+                    <input class="form-control" type="file" id="passportFile" accept=".pdf,.jpg,.jpeg,.png" disabled>
+                    <button id="uploadPassportBtn" class="btn btn-success mt-2" disabled>Upload Passport</button>
+                    <div id="passportStatus" class="mt-2 text-info"></div>
+                </div>
+
+                <div>
+                    <label for="photoFile" class="form-label">Photograph</label>
+                    <input class="form-control" type="file" id="photoFile" accept=".jpg,.jpeg,.png" disabled>
+                    <button id="uploadPhotoBtn" class="btn btn-success mt-2" disabled>Upload Photograph</button>
+                    <div id="photoStatus" class="mt-2 text-info"></div>
+                </div>
+            </div>
+
+            <div class="payment-card d-none" id="paymentCard">
+                <h5 class="text-primary">Step 2: Make Payment</h5>
+                <p class="text-muted">Your documents have been submitted. Please make the payment to finalize your application.</p>
+                <button id="makePaymentBtn" class="btn btn-primary btn-lg">Make Payment</button>
+            </div>
+        </div>
+
+        <div id="continueLink" class="mt-4 d-none">
+            <a href="application_form.html" class="btn btn-primary">Continue Application</a>
+        </div>
+    </div>
+
+    <div class="modal fade" id="paymentModal" tabindex="-1" aria-labelledby="paymentModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="paymentModalLabel">Account Details for Payment</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <p>Please make a bank transfer to the following account to finalize your application. **Remember to use your full name as the transfer reference.**</p>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item"><strong>Bank Name:</strong> Access Bank</li>
+                <li class="list-group-item"><strong>Account Name:</strong> VisaHub Services</li>
+                <li class="list-group-item"><strong>Account Number:</strong> 0123456789</li>
+                <li class="list-group-item"><strong>Amount:</strong> NGN 50,000</li>
+            </ul>
+            <div id="paymentStatusMessage" class="mt-3 text-center"></div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" id="confirmPaymentBtn">I have paid</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyDO5Bpeg0Ewg6lUzbIaI-Kp4wC9ET6OQfE",
+            authDomain: "visasponsor-e62c2.firebaseapp.com",
+            projectId: "visasponsor-e62c2",
+            storageBucket: "visasponsor-e62c2.firebasestorage.app",
+            messagingSenderId: "179101134570",
+            appId: "1:179101134570:web:bea801f12c1a620717b193",
+            measurementId: "G-NE7T0PPG6K"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        const storage = firebase.storage();
+
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            auth.signOut().then(() => window.location.href = "index.html");
+        });
+
+        auth.onAuthStateChanged(async user => {
+            if (!user) return window.location.href = "index.html";
+
+            const doc = await db.collection("visaApplications").doc(user.uid).get();
+            if (!doc.exists) {
+                document.getElementById('applicationStatus').classList.remove('d-none');
+                document.getElementById('applicationStatus').classList.add('alert-warning');
+                document.getElementById('applicationStatus').textContent = "You have not started your visa application.";
+                document.getElementById('continueLink').classList.remove('d-none');
+                document.querySelector('#continueLink a').href = "application_form.html";
+                return;
+            }
+
+            const data = doc.data();
+            document.getElementById('applicationDetails').classList.remove('d-none');
+            document.getElementById('fullName').textContent = `${data.firstname || ''} ${data.othername || ''} ${data.surname || ''}`.trim() || 'N/A';
+            document.getElementById('visaType').textContent = data.visaType || 'N/A';
+            document.getElementById('country').textContent = data.countryToVisa || 'N/A';
+            document.getElementById('statusText').textContent = data.status || 'pending';
+
+            const statusBox = document.getElementById('applicationStatus');
+            statusBox.classList.remove('d-none');
+            
+            const passportFile = document.getElementById('passportFile');
+            const passportBtn = document.getElementById('uploadPassportBtn');
+            const photoFile = document.getElementById('photoFile');
+            const photoBtn = document.getElementById('uploadPhotoBtn');
+            const paymentCard = document.getElementById('paymentCard');
+            const uploadMessage = document.getElementById('uploadMessage');
+            
+            if (data.progress >= 4) {
+                document.getElementById('approvedActions').classList.remove('d-none');
+                document.getElementById('continueLink').classList.add('d-none');
+                
+                if (data.status === 'approved') {
+                    statusBox.classList.replace('alert-info', 'alert-success');
+                    statusBox.innerHTML = `<strong>Status:</strong> Approved – Congratulations, your application has been approved.`;
+                    
+                    passportFile.disabled = false;
+                    passportBtn.disabled = false;
+                    photoFile.disabled = false;
+                    photoBtn.disabled = false;
+                    uploadMessage.textContent = 'Your application is approved. Please upload the required documents below to proceed.';
+
+                    if (data.passportUrl) {
+                        document.getElementById('passportStatus').textContent = 'Passport Uploaded';
+                        document.getElementById('passportStatus').classList.replace('text-info', 'text-success');
+                        passportFile.disabled = true;
+                        passportBtn.disabled = true;
+                    }
+                    if (data.photoUrl) {
+                        document.getElementById('photoStatus').textContent = 'Photograph Uploaded';
+                        document.getElementById('photoStatus').classList.replace('text-info', 'text-success');
+                        photoFile.disabled = true;
+                        photoBtn.disabled = true;
+                    }
+
+                    if (data.passportUrl && data.photoUrl) {
+                        paymentCard.classList.remove('d-none');
+                    }
+                    
+                    if (data.paymentStatus === 'paid') {
+                        paymentCard.innerHTML = `<h5 class="text-primary">Step 2: Make Payment</h5>
+                                                 <p class="text-success fw-bold">Payment has been successfully received.</p>`;
+                    }
+
+                } else if (data.status === 'pending') {
+                    statusBox.classList.add('alert-info');
+                    statusBox.innerHTML = `<strong>Status:</strong> Pending – Your visa application is under review.`;
+                    uploadMessage.textContent = 'The upload buttons will be enabled once your application is approved.';
+                    
+                    passportFile.disabled = true;
+                    passportBtn.disabled = true;
+                    photoFile.disabled = true;
+                    photoBtn.disabled = true;
+
+                } else if (data.status === 'rejected') {
+                    statusBox.classList.replace('alert-info', 'alert-danger');
+                    statusBox.innerHTML = `<strong>Status:</strong> Rejected – Your application was rejected. Please contact support.`;
+                    document.getElementById('approvedActions').classList.add('d-none');
+                }
+            } else {
+                statusBox.classList.add('alert-info');
+                statusBox.innerHTML = `<strong>Status:</strong> Pending – Your visa application is under review.`;
+                document.getElementById('approvedActions').classList.add('d-none');
+                
+                if (data.progress && data.progress < 4) {
+                    document.getElementById('continueLink').classList.remove('d-none');
+                    let nextStepPage = "application_form.html";
+                    if (data.progress === 1) nextStepPage = "application_form2.html";
+                    else if (data.progress === 2) nextStepPage = "eligibility.html";
+                    document.querySelector('#continueLink a').href = nextStepPage;
+                }
+            }
+        });
+
+        async function uploadFile(fileInputId, statusDivId, fieldName) {
+            const user = auth.currentUser;
+            const fileInput = document.getElementById(fileInputId);
+            const statusDiv = document.getElementById(statusDivId);
+            const file = fileInput.files[0];
+
+            if (!file) {
+                statusDiv.textContent = 'Please select a file.';
+                statusDiv.classList.replace('text-info', 'text-danger');
+                return;
+            }
+
+            statusDiv.textContent = 'Uploading...';
+            statusDiv.classList.replace('text-danger', 'text-info');
+            
+            try {
+                const filePath = `documents/${user.uid}/${file.name}`;
+                const storageRef = storage.ref(filePath);
+                await storageRef.put(file);
+                const fileUrl = await storageRef.getDownloadURL();
+
+                await db.collection("visaApplications").doc(user.uid).update({
+                    [fieldName]: fileUrl,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                
+                statusDiv.textContent = 'Upload successful!';
+                statusDiv.classList.replace('text-info', 'text-success');
+                document.getElementById(`upload${fieldName.charAt(0).toUpperCase() + fieldName.slice(1)}Btn`).disabled = true;
+                document.getElementById(fileInputId).disabled = true;
+
+                const doc = await db.collection("visaApplications").doc(user.uid).get();
+                if (doc.data().passportUrl && doc.data().photoUrl) {
+                    document.getElementById('paymentCard').classList.remove('d-none');
+                }
+
+            } catch (error) {
+                statusDiv.textContent = `Error: ${error.message}`;
+                statusDiv.classList.replace('text-info', 'text-danger');
+            }
+        }
+
+        document.getElementById('uploadPassportBtn').addEventListener('click', () => uploadFile('passportFile', 'passportStatus', 'passportUrl'));
+        document.getElementById('uploadPhotoBtn').addEventListener('click', () => uploadFile('photoFile', 'photoStatus', 'photoUrl'));
+
+        // New functionality: Show the modal when the button is clicked
+        document.getElementById('makePaymentBtn').addEventListener('click', () => {
+             const paymentModal = new bootstrap.Modal(document.getElementById('paymentModal'));
+             paymentModal.show();
+        });
+
+        // New functionality: Update Firestore when "I have paid" is clicked
+        document.getElementById('confirmPaymentBtn').addEventListener('click', async () => {
+            const user = auth.currentUser;
+            const paymentStatusMessage = document.getElementById('paymentStatusMessage');
+            const confirmBtn = document.getElementById('confirmPaymentBtn');
+
+            confirmBtn.disabled = true;
+            paymentStatusMessage.textContent = 'Processing payment confirmation...';
+            paymentStatusMessage.classList.remove('text-danger', 'text-success');
+            paymentStatusMessage.classList.add('text-info');
+
+            try {
+                await db.collection('visaApplications').doc(user.uid).update({
+                    paymentStatus: 'paid',
+                    paymentDate: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                paymentStatusMessage.textContent = 'Payment confirmed! The payment gateway will verify within 24 hours.';
+                paymentStatusMessage.classList.replace('text-info', 'text-success');
+
+                // Reload the page to reflect the new payment status
+                setTimeout(() => window.location.reload(), 2000);
+            } catch (error) {
+                paymentStatusMessage.textContent = `Error confirming payment: ${error.message}`;
+                paymentStatusMessage.classList.replace('text-info', 'text-danger');
+                confirmBtn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>

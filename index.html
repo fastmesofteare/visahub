@@ -1,0 +1,539 @@
+<!DOCTYPE html> 
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Visa|Hub</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+</head>
+<body>
+  <header>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-transparent position-absolute w-100 px-lg-5 px-2" style="z-index:3;">
+      <div class="container-fluid">
+        <a class="navbar-brand d-flex align-items-center gap-2" href="index.html">
+          <img src="1000205315-removebg-preview.png" alt="SoftGap Logo" style="width:40px; height:40px;">
+          <span class="fw-bold">Visa Hub</small></span>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-end" id="mainNav">
+          <ul class="navbar-nav mb-2 mb-lg-0 gap-lg-5">
+            <li class="nav-item">
+              <a class="nav-link" href="index.html">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="services.html">Visa </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="contact.html">Contact Us</a>
+            </li>
+          </ul>
+          <!-- User avatar and dropdown will be injected here -->
+          <div id="navbarUser" class="ms-3"></div>
+        </div>
+      </div>
+    </nav>
+  </header>
+ <section id="hero-section">
+  <div class="hero-container text-center">
+    <h1>Welcome to Visa Sponsorship Hub</h1>
+    <p>Your gateway to international opportunities. Discover everything you need for visa sponsorship.</p>
+    <button onclick="openLoginModal()" class="btn btn-lg btn-primary">Get Started</button>
+  </div>
+
+  <div class="row vision-mission justify-content-center mb-4">
+    <div class="col-md-5 bg-white bg-opacity-10 rounded p-4 m-2">
+      <h2 class="text-light">Our Vision</h2>
+      <p class="text-light">
+        To become the most trusted global visa sponsorship platform, connecting individuals to educational, work, and travel opportunities worldwide.
+      </p>
+    </div>
+    <div class="col-md-5 bg-white bg-opacity-10 rounded p-4 m-2">
+      <h2 class="text-light">Our Mission</h2>
+      <p class="text-light">
+        To simplify the visa sponsorship process by providing transparent, accessible, and reliable support for applicants seeking opportunities abroad.
+      </p>
+    </div>
+  </div>
+</section>
+
+
+<!-- Card Example -->
+
+<section class="visa-section">
+  <h2 class="section-title">Apply for Your Visa Now!</h2>
+  <div class="visa-grid">
+    <!-- Card Example -->
+    <div class="visa-card" style="background-color: #f06273;">
+      <img src="https://flagcdn.com/us.svg" alt="USA Flag">
+      <h3>USA  Visa</h3>
+      <button onclick="openLoginModal()" class="apply-btn">Apply</button>
+    </div>
+
+    <div class="visa-card" style="background-color: #2bbbad;">
+      <img src="https://flagcdn.com/ca.svg" alt="Canada Flag">
+      <h3>Canada  Visa</h3>
+      <button onclick="openLoginModal()" class="apply-btn" >Apply</button>
+    </div>
+
+    <div class="visa-card" style="background-color: #00bcd4;">
+      <img src="https://flagcdn.com/gb.svg" alt="UK Flag">
+      <h3>UK  Visa</h3>
+      <button onclick="openLoginModal()" class="apply-btn">Apply</button>
+    </div>
+
+    <div class="visa-card" style="background-color: #a389f4;">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/b/b7/Flag_of_Europe.svg" alt="EU Flag">
+      <h3>Schengen  Visa</h3>
+      <button onclick="openLoginModal()" class="apply-btn">Apply</button>
+    </div>
+
+    <div class="visa-card" style="background-color: #a389f4;">
+      <img src="https://flagcdn.com/nz.svg" alt="New Zealand Flag">
+      <h3>New Zealand  Visa</h3>
+      <button onclick="openLoginModal()" class="apply-btn">Apply</button>
+    </div>
+
+    <div class="visa-card" style="background-color: #00bcd4;">
+      <img src="https://flagcdn.com/jp.svg" alt="Japan Flag">
+      <h3>Japan  Visa</h3>
+      <button onclick="openLoginModal()" class="apply-btn">Apply</button>
+    </div>
+
+    <div class="visa-card" style="background-color: #2bbbad;">
+      <img src="https://flagcdn.com/ie.svg" alt="Ireland Flag">
+      <h3>Ireland Visit Visa</h3>
+      <button onclick="openLoginModal()" class="apply-btn">Apply</button>
+    </div>
+
+    <div class="visa-card" style="background-color: #f06273;">
+      <img src="https://flagcdn.com/au.svg" alt="Australia Flag">
+      <h3>Australia  Visa</h3>
+      <button onclick="openLoginModal()" class="apply-btn">Apply</button>
+    </div>
+  </div>
+</section>
+<section class="destinations-section">
+  <div class="container">
+    <p class="subtitle">OUR BEST</p>
+    <h2 class="title">Destinations</h2>
+
+    <div class="destinations-grid">
+      <div class="destination-card">
+        <img src="https://images.unsplash.com/photo-1517935706615-2717063c2225?q=80&w=465&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Toronto">
+        <div class="destination-info">
+          <h3>Toronto</h3>
+          <p>Canada</p>
+        </div>
+      </div>
+
+      <div class="destination-card">
+        <img src="https://plus.unsplash.com/premium_photo-1671734045770-4b9e1a5e53a0?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8bG9uZG9ufGVufDB8fDB8fHww" alt="London">
+        <div class="destination-info">
+          <h3>London</h3>
+          <p>United Kingdom</p>
+        </div>
+      </div>
+
+      <div class="destination-card">
+        <img src="https://images.unsplash.com/photo-1511739001486-6bfe10ce785f?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8UGFyaXN8ZW58MHx8MHx8fDA%3D" alt="Paris">
+        <div class="destination-info">
+          <h3>Paris</h3>
+          <p>France</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+     <div class="destinations-grid" style="margin-top: 100px;">
+      <div class="destination-card">
+        <img src="https://images.unsplash.com/photo-1541336032412-2048a678540d?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8TmV3JTIwWW9ya3xlbnwwfHwwfHx8MA%3D%3D" alt="New York">
+        <div class="destination-info">
+          <h3>New York</h3>
+          <p>United State</p>
+        </div>
+      </div>
+
+      <div class="destination-card">
+        <img src="https://plus.unsplash.com/premium_photo-1697729758146-9aa25d423094?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8QmFyY2Vsb25hfGVufDB8fDB8fHww" alt="spain">
+        <div class="destination-info">
+          <h3>Barcelona</h3>
+          <p>Spain</p>
+        </div>
+      </div>
+
+      <div class="destination-card">
+        <img src="https://plus.unsplash.com/premium_photo-1675975706513-9daba0ec12a8?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8Um9tZXxlbnwwfHwwfHx8MA%3D%3D" alt="Paris">
+        <div class="destination-info">
+          <h3>Rome</h3>
+          <p>Italy etc</p>
+        </div>
+      </div>
+    </div>
+</section>
+
+<section id="requirements">
+  <div class="container">
+    <div class="row vision-mission justify-content-center mb-4">
+      <div class="col-md-5 bg-white bg-opacity-10 rounded p-3 m-2">
+        <h2 style="color: red;">Steps for Our Sponsorship</h2>
+        <div class="requirements-container">
+          <ul>
+            <li><strong>Step 1:</strong> Fill out the visa application form.</li>
+            <li><strong>Step 2:</strong> Upload your international passport.</li>
+            <li><strong>Step 3:</strong> We will submit your documents to the embassy.</li>
+            <li><strong>Step 4:</strong> If the embassy approves your visa, you will receive an acceptance letter.</li>
+            <li><strong>Step 5:</strong> Proceed to pay your fee.</li>
+            <li><strong>Step 6:</strong> Your visa will be forwarded to the embassy in your country. The embassy will then invite you, along with your international passport, for stamping.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-md-5 bg-white bg-opacity-10 rounded p-3 m-2">
+        <img src="https://images.unsplash.com/photo-1581656702382-9ae90e68e7b7?q=80&w=681&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Visa Requirements">
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section class="destinations-section">
+  <div class="container">
+    <p class="subtitle">CONFERENCE VISA</p>
+    <h2 class="title">We partner with the following organizations</h2>
+    <div class="destinations-grid">
+      <div class="destination-card">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQuxaepuaGfihRDScGr8pi9G-cSILV3yZK3g&s" alt="harvard model united nations (hmun)">
+        <div class="destination-info">
+          <h3>Best Diplomats</h3>
+        </div>
+      </div>
+
+      <div class="destination-card">
+        <img src="https://images.squarespace-cdn.com/content/v1/5c74d134da50d3186dc8d782/1551245094229-5UZTZTJO5TNSVLSFLFPR/HMUNshieldlogo+%282%29+%281%29.png" alt="London">
+        <div class="destination-info">
+          <h3>Harvard Model United Nations (HMUN)</h3>
+        </div>
+      </div>
+
+      <div class="destination-card">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfVjLDz5-sTUr6SBGbs_h3cvWGzxqnvDsRxA&s" alt="Paris">
+        <div class="destination-info">
+          <h3>Global Goals Model United Nations (GGMUN)</h3>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<section id="testimonials" class="py-5 bg-dark text-light">
+  <div class="container">
+    <h2 class="text-center mb-4 text-danger">What Our Participants Say</h2>
+    <div class="row">
+      <!-- Testimony 1 -->
+      <div class="col-md-4 mb-4">
+        <div class="bg-white bg-opacity-10 rounded p-3 h-100">
+          <p>"This program changed my life! I now have a clear career path and international connections."</p>
+          <h5>- Sarah Johnson</h5>
+          <small>USA 🇺🇸</small>
+        </div>
+      </div>
+      <!-- Testimony 2 -->
+      <div class="col-md-4 mb-4">
+        <div class="bg-white bg-opacity-10 rounded p-3 h-100">
+          <p>"I met amazing people from around the world and learned so much about global diplomacy."</p>
+          <h5>- Mohamed Al-Farsi</h5>
+          <small>UAE 🇦🇪</small>
+        </div>
+      </div>
+      <!-- Testimony 3 -->
+      <div class="col-md-4 mb-4">
+        <div class="bg-white bg-opacity-10 rounded p-3 h-100">
+          <p>"The experience was incredible! I gained confidence, skills, and a whole new vision."</p>
+          <h5>- Anita Mensah</h5>
+          <small>Ghana 🇬🇭</small>
+        </div>
+      </div>
+      <!-- Testimony 4 -->
+      <div class="col-md-4 mb-4">
+        <div class="bg-white bg-opacity-10 rounded p-3 h-100">
+          <p>"A professionally organized event that truly inspired leadership and change."</p>
+          <h5>- Lucas Mendes</h5>
+          <small>Brazil 🇧🇷</small>
+        </div>
+      </div>
+      <!-- Testimony 5 -->
+      <div class="col-md-4 mb-4">
+        <div class="bg-white bg-opacity-10 rounded p-3 h-100">
+          <p>"From visa support to accommodation, everything was seamless. Highly recommended."</p>
+          <h5>- Amina Yusuf</h5>
+          <small>Nigeria 🇳🇬</small>
+        </div>
+      </div>
+      <!-- Testimony 6 -->
+      <div class="col-md-4 mb-4">
+        <div class="bg-white bg-opacity-10 rounded p-3 h-100">
+          <p>"The networking opportunities are unmatched. I'm now working with a global NGO I met there."</p>
+          <h5>- Raj Patel</h5>
+          <small>India 🇮🇳</small>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<footer style="background-color: #0d1b2a; color: white;" class="pt-5 pb-0">
+  <hr style="border-bottom: 10px solid white;">
+  <div class="container">
+    <div class="row footer-section text-center text-lg-start">
+      <div class="col-lg-6 mb-4 mb-lg-0">
+        <h4 class="text-info">OUR SERVICES</h4>
+        <ul class="list-unstyled">
+          <li>Student Visa</li>
+          <li>Working Visa</li>
+          <li>Tourism Visa</li>
+          <li>Conference Visa</li>
+        </ul>
+      </div>
+      <div class="col-lg-6">
+        <h4 class="text-info">CONTACT US</h4>
+        <ul class="list-unstyled">
+          <li>info@visahub.online, support@visahub.online</li>
+          <li>www.visahub.onine</li>
+          <li style="margin-top: 20px;"><strong>New York (Regional Office): <br> </strong>448 Broadway, 2nd Floor, New York, NY 10013, United States</li>
+          <li ><strong>Texas (Regional Office): <br></strong>11823 North Fwy, Suite 218, Houston, TX 77060, United States</li>
+          <li><strong>Dubai (Global Delivery Center): <br></strong>Office # 504-724, Al Muraqabat Deira, Dubai, United Arab Emirates</li>
+
+        </ul>
+      </div>
+    </div>
+    <div style="background-color: #1b263b;" class="footer-bottom text-center py-3 mt-4">
+      © 2025 Visa Hub. All rights reserved. 
+    </div>
+    <a style="text-decoration: none; color: #000;" href="admin_panel.html">ad</a>
+  </div>
+</footer>
+
+
+  <!-- Sign Up/Login Modal -->
+  <div id="authModal" class="modal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content bg-white text-dark rounded-3">
+        <div class="modal-header">
+          <h2 class="modal-title h5" id="authModalTitle">Sign Up</h2>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="closeAuthModal"></button>
+        </div>
+        <div class="modal-body">
+          <form id="authForm" autocomplete="off">
+            <div class="mb-3">
+              <label for="authEmail" class="form-label">Email</label>
+              <input type="email" id="authEmail" class="form-control" required>
+            </div>
+            <div id="authNameField" class="mb-3" style="display: none;">
+              <label for="authName" class="form-label">Full Name</label>
+              <input type="text" id="authName" class="form-control">
+            </div>
+            <div class="mb-3 position-relative">
+              <label for="authPassword" class="form-label">Password</label>
+              <input type="password" id="authPassword" class="form-control" required autocomplete="new-password">
+              <span class="position-absolute top-50 end-0 translate-middle-y me-3" style="cursor:pointer;" onclick="togglePassword('authPassword', this)">
+                <i class="bi bi-eye-slash"></i>
+              </span>
+            </div>
+            <div id="confirmPasswordField" class="mb-3 position-relative" style="display: none;">
+              <label for="authConfirmPassword" class="form-label">Repeat Password</label>
+              <input type="password" id="authConfirmPassword" class="form-control" autocomplete="new-password">
+              <span class="position-absolute top-50 end-0 translate-middle-y me-3" style="cursor:pointer;" onclick="togglePassword('authConfirmPassword', this)">
+                <i class="bi bi-eye-slash"></i>
+              </span>
+            </div>
+            <button type="submit" class="btn btn-primary w-100" id="authActionBtn">Sign Up</button>
+          </form>
+          <div id="authMsg" class="mt-2"></div>
+          <div class="text-center mt-3">
+            <a href="#" id="toggleAuth">Already have an account? Login</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap Bundle JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- ... (rest of your HTML remains unchanged) ... -->
+
+<script>
+  // Firebase config
+  const firebaseConfig = {
+  apiKey: "AIzaSyDO5Bpeg0Ewg6lUzbIaI-Kp4wC9ET6OQfE",
+  authDomain: "visasponsor-e62c2.firebaseapp.com",
+  projectId: "visasponsor-e62c2",
+  storageBucket: "visasponsor-e62c2.firebasestorage.app",
+  messagingSenderId: "179101134570",
+  appId: "1:179101134570:web:bea801f12c1a620717b193",
+  measurementId: "G-NE7T0PPG6K"
+};
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db = firebase.firestore();
+
+  const authModal = new bootstrap.Modal(document.getElementById('authModal'));
+  let isLogin = false;
+
+  const authModalTitle = document.getElementById('authModalTitle');
+  const authActionBtn = document.getElementById('authActionBtn');
+  const authMsg = document.getElementById('authMsg');
+  const authNameField = document.getElementById('authNameField');
+  const confirmPasswordField = document.getElementById('confirmPasswordField');
+  const toggleAuth = document.getElementById('toggleAuth');
+
+  function showLogin() {
+    isLogin = true;
+    authModalTitle.innerText = "Login";
+    authActionBtn.innerText = "Login";
+    authNameField.style.display = "none";
+    confirmPasswordField.style.display = "none";
+    toggleAuth.innerText = "Don't have an account? Sign Up";
+    authMsg.innerHTML = "";
+  }
+
+  function showSignUp() {
+    isLogin = false;
+    authModalTitle.innerText = "Sign Up";
+    authActionBtn.innerText = "Sign Up";
+    authNameField.style.display = "";
+    confirmPasswordField.style.display = "";
+    toggleAuth.innerText = "Already have an account? Login";
+    authMsg.innerHTML = "";
+  }
+
+  toggleAuth.onclick = (e) => {
+    e.preventDefault();
+    if (isLogin) showSignUp();
+    else showLogin();
+  };
+
+  function togglePassword(id, el) {
+    let input = document.getElementById(id);
+    let icon = el.querySelector('i');
+    if (input.type === "password") {
+      input.type = "text";
+      icon.classList.remove("bi-eye-slash");
+      icon.classList.add("bi-eye");
+    } else {
+      input.type = "password";
+      icon.classList.remove("bi-eye");
+      icon.classList.add("bi-eye-slash");
+    }
+  }
+
+  function setNavbarUser(user) {
+    const navbarUser = document.getElementById('navbarUser');
+    if (!user) {
+      navbarUser.innerHTML = "";
+      return;
+    }
+    const avatarUrl = user.photoURL || `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(user.displayName || user.email || 'User')}`;
+    navbarUser.innerHTML = `
+      <div class="dropdown">
+        <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+          <img src="${avatarUrl}" alt="avatar" width="38" height="38" class="rounded-circle border border-2 border-light me-2">
+          <span class="d-none d-md-inline fw-bold">${user.displayName || user.email}</span>
+        </a>
+        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+          <li><a class="dropdown-item" href="dashboard.html"><i class="bi bi-speedometer2 me-2"></i>Go Dashboard</a></li>
+          <li><span class="dropdown-item-text">${user.email}</span></li>
+          <li><hr class="dropdown-divider"></li>
+          <li><a class="dropdown-item text-danger" href="#" id="logoutBtn">Logout</a></li>
+        </ul>
+      </div>
+    `;
+    document.getElementById('logoutBtn').onclick = function () {
+      auth.signOut().then(() => {
+        window.location.href = "index.html";
+      });
+    };
+  }
+
+  auth.onAuthStateChanged(function (user) {
+    setNavbarUser(user);
+    if (user && bootstrap.Modal.getInstance(document.getElementById('authModal'))) {
+      bootstrap.Modal.getInstance(document.getElementById('authModal')).hide();
+    }
+  });
+
+  function openLoginModal() {
+    const user = auth.currentUser;
+    if (user) {
+      window.location.href = "/application_form.html";
+    } else {
+      showLogin();
+      authModal.show();
+    }
+  }
+
+  // Handle form submission
+  document.getElementById('authForm').onsubmit = function (e) {
+    e.preventDefault();
+    const email = document.getElementById('authEmail').value;
+    const password = document.getElementById('authPassword').value;
+    const name = document.getElementById('authName').value;
+    const confirmPassword = document.getElementById('authConfirmPassword').value;
+
+    authMsg.innerHTML = "Processing...";
+
+    if (!isLogin && password !== confirmPassword) {
+      authMsg.innerHTML = '<span class="text-danger">Passwords do not match.</span>';
+      return;
+    }
+
+    if (isLogin) {
+      auth.signInWithEmailAndPassword(email, password)
+        .then(result => {
+          authMsg.innerHTML = '<span class="text-success">Logged in!</span>';
+          setTimeout(() => {
+            authModal.hide();
+            window.location.href = "/application_form.html";
+          }, 800);
+        })
+        .catch(error => {
+          authMsg.innerHTML = '<span class="text-danger">' + error.message + '</span>';
+          showLogin();
+        });
+    } else {
+      auth.createUserWithEmailAndPassword(email, password)
+        .then(result => result.user.updateProfile({ displayName: name }).then(() => result))
+        .then(async result => {
+          await db.collection("userRoles").doc(result.user.uid).set({ role: "user" });
+          authMsg.innerHTML = '<span class="text-success">Account created!</span>';
+          setNavbarUser(result.user); // Fix: update navbar
+          setTimeout(() => {
+            authModal.hide();
+            window.location.href = "/application_form.html";
+          }, 800);
+        })
+        .catch(error => {
+          authMsg.innerHTML = '<span class="text-danger">' + error.message + '</span>';
+        });
+    }
+  };
+
+  // Close auth modal
+  document.getElementById('closeAuthModal').onclick = function () {
+    authModal.hide();
+  };
+
+  // Attach login modal logic to all .apply-btn buttons
+  document.querySelectorAll('.apply-btn').forEach(function (btn) {
+    btn.onclick = openLoginModal;
+  });
+</script>
+
+</body>
+</html>

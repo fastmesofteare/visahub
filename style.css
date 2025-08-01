@@ -1,0 +1,279 @@
+body {
+  color: #fff;
+  font-family: 'Montserrat', Arial, sans-serif;
+  background-blend-mode: overlay;
+
+}
+
+.hero-section {
+  background: url('https://images.unsplash.com/photo-1655722724451-0df658a2ab23?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D') center/cover no-repeat;
+  min-height: 400px;
+}
+
+.hero .content {
+  z-index: 2;
+  position: relative;
+}
+
+.hero h1 {
+  font-size: 2.5em;
+  margin-bottom: 10px;
+  font-weight: bold;
+  letter-spacing: 2px;
+}
+
+.hero .desc {
+  font-size: 1.1em;
+  margin-bottom: 30px;
+}
+
+.vision-mission > div {
+  background: rgba(255, 255, 255, 0.13);
+  border-radius: 10px;
+  backdrop-filter: blur(1px);
+}
+
+.hero-img {
+  z-index: 2;
+  width: 300px;
+}
+
+/* Responsive tweaks (Bootstrap handles most) */
+@media (max-width: 991px) {
+  .hero-img {
+    display: none !important;
+  }
+}
+
+.modal-backdrop.show {
+  opacity: 0.63;
+  background: #2a2062;
+}
+
+.nav-item a {
+  color: white;
+  font-size: 18;
+}
+
+.nav-item :hover {
+  color: white;
+  font-size: 18;
+  text-decoration: underline;
+  padding: 2px 2px;
+  border-radius: 12px;
+}
+
+/* Fix navbar background for mobile */
+@media (max-width: 768px) {
+  .navbar {
+    background-color: rgba(0, 0, 0, 0.7) !important;
+    position: relative !important;
+  }
+}
+
+.ms-3{
+  color: #fff;
+}
+
+#hero-section {
+  background: linear-gradient(90deg, rgb(29, 25, 25), #222 70%);
+  color: white;
+  padding: 60px 0 40px 0;
+}
+.hero-container {
+  background: black;
+  padding: 40px 20px;
+  text-align: center;
+  border: 2px solid #e74c3c;
+  margin: 30px auto;
+  border-radius: 20px;
+  max-width: 700px;
+  box-shadow: 0 8px 24px rgba(231,76,60,0.08);
+}
+.hero-container h1 {
+  font-size: 38px;
+  margin-bottom: 10px;
+  letter-spacing: 2px;
+}
+.hero-container p {
+  font-size: 22px;
+  margin-bottom: 22px;
+  color: #ccc;
+}
+
+.vision-mission img {
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
+  object-fit: cover;
+}
+
+.vision-mission h2 {
+  color: #e74c3c;
+  font-size: 24px;
+  margin-bottom: 16px;
+}
+
+.requirements-container ul {
+  padding-left: 18px;
+  color: black
+}
+
+.bg-opacity-10 {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+.visa-section {
+  text-align: center;
+  margin: 60px auto;
+  padding: 20px;
+  color: white;
+}
+
+.section-title {
+  font-size: 28px;
+  margin-bottom: 30px;
+  color: #ccc;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.visa-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 20px;
+  justify-items: center;
+  max-width: 900px;
+  margin: auto;
+}
+
+.visa-card {
+  background: #222;
+  border-radius: 12px;
+  padding: 20px 15px;
+  color: white;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s;
+  text-align: center;
+}
+
+.visa-card:hover {
+  transform: scale(1.03);
+}
+
+.visa-card img {
+  width: 50px;
+  height: auto;
+  margin-bottom: 12px;
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.visa-card h3 {
+  font-size: 16px;
+  margin-bottom: 10px;
+  color: white;
+}
+
+.apply-btn {
+  background: white;
+  color: #333;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.apply-btn:hover {
+  background: #e74c3c;
+  color: white;
+}
+
+.destinations-section {
+  padding: 60px 20px;
+  text-align: center;
+  background: #fafafa;
+  color: #333;
+}
+
+.destinations-section .subtitle {
+  font-size: 14px;
+  letter-spacing: 2px;
+  color: #888;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+}
+
+.destinations-section .title {
+  font-size: 36px;
+  font-weight: bold;
+  margin-bottom: 40px;
+  color: #333;
+}
+
+.destinations-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 30px;
+  max-width: 1000px;
+  margin: auto;
+}
+
+.destination-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.destination-card img {
+  width: 100%;
+  height: 320px;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.3s ease;
+}
+
+.destination-card:hover img {
+  transform: scale(1.05);
+}
+
+.destination-info {
+  position: absolute;
+  bottom: 0;
+  padding: 20px;
+  width: 100%;
+  background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+  color: white;
+  text-align: left;
+}
+
+.destination-info h3 {
+  font-size: 20px;
+  margin: 0;
+  font-weight: bold;
+}
+
+.destination-info p {
+  margin: 0;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #ccc;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  border: none;
+  padding: 12px 24px;
+  font-size: 1.1rem;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+}
+
