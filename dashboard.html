@@ -285,6 +285,24 @@
                 confirmBtn.disabled = false;
             }
         });
+        auth.onAuthStateChanged(async (user) => {
+  if (user) {
+    const userRoleDoc = await db.collection("userRoles").doc(user.uid).get();
+    const role = userRoleDoc.data().role;
+
+    if (role !== "user") {
+      alert("Access denied: You are not a regular user.");
+      await auth.signOut();
+      window.location.href = "index.html";
+    } else {
+      // Load user dashboard
+      console.log("Welcome User!");
+    }
+  } else {
+    window.location.href = "index.html";
+  }
+});
+
     </script>
 </body>
 </html>

@@ -44,9 +44,9 @@
                 </button>
                 <div class="collapse navbar-collapse justify-content-end" id="mainNav">
                     <ul class="navbar-nav mb-2 mb-lg-0 gap-lg-5">
-                        <li class="nav-item"><a class="nav-link" href="/index.html">Home</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/pages/services.html">Services</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/pages/contact.html">Contact Us</a></li>
+                        <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                        <li class="nav-item"><a class="nav-link" href="pages/services.html">Visa</a></li>
+                        <li class="nav-item"><a class="nav-link" href="pages/contact.html">Contact Us</a></li>
                     </ul>
                 </div>
             </div>
@@ -112,11 +112,11 @@
             <div id="formMsg" class="mt-3"></div>
         </form>
         <div id="notLoggedIn" class="alert alert-warning" style="display:none;">
-            You must <a href="/index.html">login or signup</a> to apply for a loan.
+            You must <a href="index.html">login or signup</a> to apply for a loan.
         </div>
     </div>
     <div class="footer-nav">
-        Need help? <a href="/contact.html">Contact Support</a> | <a href="index.html">Back to Home</a>
+        Need help? <a href="contact.html">Contact Support</a> | <a href="index.html">Back to Home</a>
     </div>
     <script>
         const firebaseConfig = {
@@ -144,13 +144,13 @@
                 if (doc.exists) {
                     const data = doc.data();
                     if (data.progress === 2) {
-                        window.location.href = "/application_form2.html";
+                        window.location.href = "application_form2.html";
                         return;
                     } else if (data.progress === 3) {
-                        window.location.href = "/eligibility.html";
+                        window.location.href = "eligibility.html";
                         return;
                     } else if (data.progress === 4) {
-                        window.location.href = "/dashboard.html";
+                        window.location.href = "dashboard.html";
                         return;
                     }
                     document.getElementById('surname').value = data.surname || '';
@@ -206,7 +206,7 @@
             try {
                 document.getElementById('formMsg').innerHTML = "Saving...";
                 await db.collection('visaApplications').doc(user.uid).set(bioData, { merge: true });
-                window.location.href = "/application_form2.html";
+                window.location.href = "application_form2.html";
             } catch (error) {
                 document.getElementById('formMsg').innerHTML = `<span class="text-danger">Error saving data: ${error.message}</span>`;
             }

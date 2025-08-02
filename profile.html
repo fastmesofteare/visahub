@@ -114,18 +114,18 @@
   <!-- Navbar -->
   <nav class="navbar navbar-expand-lg">
     <div class="container-fluid">
-      <a class="navbar-brand d-flex align-items-center gap-2" href="/dashboard.html">
-        <img src="/stylish/images/logo2.jpg" style="width: 40px; height: 40px;" alt="SoftGap Logo">
-        <span>SoftGap<br><small>Systems Limited</small></span>
-      </a>
+      <a class="navbar-brand d-flex align-items-center gap-2" href="index.html">
+          <img src="1000205315-removebg-preview.png" alt="visahub" style="width: 40px; height: 40px;">
+          <span class="fw-bold">Visa|Hub</small></span>
+        </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse justify-content-end" id="mainNav">
         <ul class="navbar-nav gap-3">
-          <li class="nav-item"><a class="nav-link" href="/index.html">Home</a></li>
-          <li class="nav-item"><a class="nav-link" href="/services.html">Services</a></li>
-          <li class="nav-item"><a class="nav-link" href="/contact.html">Contact Us</a></li>
+          <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="services.html">Services</a></li>
+          <li class="nav-item"><a class="nav-link" href="contact.html">Contact Us</a></li>
         </ul>
         <div id="navbarUser" class="ms-3"></div>
       </div>
@@ -136,7 +136,7 @@
   <div class="profile-container">
     <div class="profile-title">Your Profile</div>
     <div id="notLoggedIn" class="alert alert-warning" style="display: none;">
-      You must <a href="/index.html">login or signup</a> to view your profile.
+      You must <a href="index.html">login or signup</a> to view your profile.
     </div>
     <div id="profileContent" style="display: none;">
       <div class="card">
@@ -181,7 +181,7 @@
 
   <!-- Footer -->
   <div class="footer-nav">
-    Need help? <a href="/contact.html">Contact Support</a> | <a href="/index.html">Back to Home</a>
+    Need help? <a href="contact.html">Contact Support</a> | <a href="index.html">Back to Home</a>
   </div>
 
   <!-- Firebase + Logic -->
@@ -224,7 +224,7 @@ function setNavbarUser(user) {
   document.getElementById('logoutBtn').onclick = function() {
     auth.signOut().then(() => {
       sessionStorage.clear();
-      window.location.href = "/index.html";
+      window.location.href = "index.html";
     });
   };
 }

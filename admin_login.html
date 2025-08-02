@@ -151,6 +151,25 @@
                 loginMsg.innerText = error.message;
             }
         };
+
+      auth.onAuthStateChanged(async (user) => {
+  if (user) {
+    const userRoleDoc = await db.collection("userRoles").doc(user.uid).get();
+    const role = userRoleDoc.data().role;
+
+    if (role !== "admin") {
+      alert("Access denied: You are not an admin.");
+      await auth.signOut();
+      window.location.href = "login.html";
+    } else {
+      // Load admin dashboard
+      console.log("Welcome Admin!");
+    }
+  } else {
+    window.location.href = "login.html";
+  }
+});
+
     </script>
 </body>
 </html>

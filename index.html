@@ -45,7 +45,7 @@
   </header>
  <section id="hero-section">
   <div class="hero-container text-center">
-    <h1>Welcome to Visa Sponsorship Hub</h1>
+    <h1 class="welcome-ani">WELCOME TO VISAHUB</h1>
     <p>Your gateway to international opportunities. Discover everything you need for visa sponsorship.</p>
     <button onclick="openLoginModal()" class="btn btn-lg btn-primary">Get Started</button>
   </div>
@@ -471,7 +471,7 @@
   function openLoginModal() {
     const user = auth.currentUser;
     if (user) {
-      window.location.href = "/application_form.html";
+      window.location.href = "application_form.html";
     } else {
       showLogin();
       authModal.show();
@@ -499,7 +499,7 @@
           authMsg.innerHTML = '<span class="text-success">Logged in!</span>';
           setTimeout(() => {
             authModal.hide();
-            window.location.href = "/application_form.html";
+            window.location.href = "application_form.html";
           }, 800);
         })
         .catch(error => {
@@ -515,7 +515,7 @@
           setNavbarUser(result.user); // Fix: update navbar
           setTimeout(() => {
             authModal.hide();
-            window.location.href = "/application_form.html";
+            window.location.href = "application_form.html";
           }, 800);
         })
         .catch(error => {
@@ -533,6 +533,43 @@
   document.querySelectorAll('.apply-btn').forEach(function (btn) {
     btn.onclick = openLoginModal;
   });
+  loginForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const email = loginForm["loginEmail"].value;
+  const password = loginForm["loginPassword"].value;
+
+  loginMsg.innerText = "Logging in...";
+
+  try {
+    const cred = await auth.signInWithEmailAndPassword(email, password);
+    const uid = cred.user.uid;
+    const userDoc = await db.collection("userRoles").doc(uid).get();
+
+    if (!userDoc.exists) {
+      throw new Error("No role assigned to this user.");
+    }
+
+    const role = userDoc.data().role;
+
+    // Store role locally if needed
+    localStorage.setItem("role", role);
+
+    // Redirect based on role
+    if (role === "admin") {
+      window.location.href = "admin_panel.html";
+    } else if (role === "user") {
+      window.location.href = "user_dashboard.html";
+    } else {
+      throw new Error("Unauthorized role.");
+    }
+  } catch (error) {
+    console.error(error);
+    await auth.signOut();
+    loginMsg.innerText = error.message;
+  }
+});
+
 </script>
 
 </body>
