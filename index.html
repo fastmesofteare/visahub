@@ -507,20 +507,30 @@
           showLogin();
         });
     } else {
-      auth.createUserWithEmailAndPassword(email, password)
-        .then(result => result.user.updateProfile({ displayName: name }).then(() => result))
-        .then(async result => {
-          await db.collection("userRoles").doc(result.user.uid).set({ role: "user" });
-          authMsg.innerHTML = '<span class="text-success">Account created!</span>';
-          setNavbarUser(result.user); // Fix: update navbar
-          setTimeout(() => {
-            authModal.hide();
-            window.location.href = "application_form.html";
-          }, 800);
-        })
-        .catch(error => {
-          authMsg.innerHTML = '<span class="text-danger">' + error.message + '</span>';
-        });
+      auth.signInWithEmailAndPassword(email, password)
+  .then(async result => {
+    const uid = result.user.uid;
+    const userDoc = await db.collection("userRoles").doc(uid).get();
+    const role = userDoc.exists ? userDoc.data().role : null;
+
+    if (role !== "user") {
+      // Not a user — log them out and show error
+      await auth.signOut();
+      authMsg.innerHTML = '<span class="text-danger">Only users can log in here. Please use the admin panel.</span>';
+      return;
+    }
+
+    authMsg.innerHTML = '<span class="text-success">Logged in!</span>';
+    setTimeout(() => {
+      authModal.hide();
+      window.location.href = "application_form.html";
+    }, 800);
+  })
+  .catch(error => {
+    authMsg.innerHTML = '<span class="text-danger">' + error.message + '</span>';
+    showLogin();
+  });
+
     }
   };
 

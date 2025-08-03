@@ -167,6 +167,8 @@
       }
 
       const data = doc.data();
+      document.getElementById("travelingDate").value = data.travelingDate || "";
+      document.getElementById("returningDate").value = data.returningDate || "";
       document.getElementById("occupation").value = data.occupation || "";
       document.getElementById("nationality").value = data.nationality || "";
       document.getElementById("currentResidenceCountry").value = data.currentResidenceCountry || "";
@@ -194,23 +196,26 @@
       if (!user) return;
 
       const formData = {
-        occupation: document.getElementById("occupation").value.trim(),
-        nationality: document.getElementById("nationality").value.trim(),
-        currentResidenceCountry: document.getElementById("currentResidenceCountry").value.trim(),
-        provinceState: document.getElementById("provinceState").value.trim(),
-        idType: document.getElementById("idType").value.trim(),
-        idNumber: document.getElementById("idNumber").value.trim(),
-        staffId: document.getElementById("staffId").value.trim(),
-        purposes: document.getElementById("purposes").value.trim(),
-        countryToVisa: document.getElementById("countryToVisa").value.trim(),
-        provinceToVisa: document.getElementById("provinceToVisa").value.trim(),
-        visaType: document.getElementById("visaType").value.trim(),
-        passportNumber: document.getElementById("passportNumber").value.trim(),
-        passportCountry: document.getElementById("passportCountry").value.trim(),
-        passportExpiry: document.getElementById("passportExpiry").value,
-        progress: 3,
-        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-      };
+  occupation: document.getElementById("occupation").value.trim(),
+  nationality: document.getElementById("nationality").value.trim(),
+  currentResidenceCountry: document.getElementById("currentResidenceCountry").value.trim(),
+  provinceState: document.getElementById("provinceState").value.trim(),
+  idType: document.getElementById("idType").value.trim(),
+  idNumber: document.getElementById("idNumber").value.trim(),
+  staffId: document.getElementById("staffId").value.trim(),
+  purposes: document.getElementById("purposes").value.trim(),
+  countryToVisa: document.getElementById("countryToVisa").value.trim(),
+  provinceToVisa: document.getElementById("provinceToVisa").value.trim(),
+  visaType: document.getElementById("visaType").value.trim(),
+  travelingDate: document.getElementById("travelingDate").value,    // <-- add this
+  returningDate: document.getElementById("returningDate").value,    // <-- and this
+  passportNumber: document.getElementById("passportNumber").value.trim(),
+  passportCountry: document.getElementById("passportCountry").value.trim(),
+  passportExpiry: document.getElementById("passportExpiry").value,
+  progress: 3,
+  updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+};
+
 
       try {
         await db.collection("visaApplications").doc(user.uid).set(formData, { merge: true });

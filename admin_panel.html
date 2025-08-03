@@ -68,6 +68,23 @@
       </div>
     </div>
   </div>
+<hr class="my-5">
+
+<div class="loan-request-title"><i class="bi bi-folder-check"></i> Uploaded Applications (Ready for Payment)</div>
+<div class="table-responsive">
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Visa Type</th>
+        <th>Payment Amount</th>
+        <th>Set Amount</th>
+      </tr>
+    </thead>
+    <tbody id="uploadedApplicationsTableBody"></tbody>
+  </table>
+</div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
@@ -80,41 +97,90 @@
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.firestore();
+async function fetchApplications() {
+  const body = document.getElementById("applicationsTableBody");
+  const uploadedBody = document.getElementById("uploadedApplicationsTableBody");
 
-    async function fetchApplications() {
-      const body = document.getElementById("applicationsTableBody");
-      body.innerHTML = '<tr><td colspan="5" class="text-center">Loading…</td></tr>';
-      let approved=0,pending=0,rejected=0;
-      const snap = await db.collection("visaApplications").get();
-      body.innerHTML = "";
-      if (snap.empty) {
-        document.getElementById("noApplications").style.display = "block";
-        return;
-      }
-      snap.forEach(doc => {
-        const d = doc.data();
-        let st = d.status || "pending";
-        if (st==="approved") approved++;
-        else if(st==="rejected") rejected++;
-        else pending++;
-        body.innerHTML += `
-          <tr>
-            <td>${d.fullName||"–"}</td>
-            <td>${d.email||"–"}</td>
-            <td>${d.visaType||"–"}</td>
-            <td><span class="status-badge status-${st}">${st.charAt(0).toUpperCase()+st.slice(1)}</span></td>
-            <td>
-              <button class="btn btn-sm btn-approve" data-id="${doc.id}" ${st==="approved"?"disabled":""}>Approve</button>
-              <button class="btn btn-sm btn-reject" data-id="${doc.id}" ${st==="rejected"?"disabled":""}>Reject</button>
-            </td>
-          </tr>`;
-      });
-      document.getElementById("approvedCount").innerText = approved;
-      document.getElementById("pendingCount").innerText = pending;
-      document.getElementById("rejectedCount").innerText = rejected;
-      document.querySelectorAll(".btn-approve").forEach(btn=>btn.onclick=()=>updateStatus(btn.dataset.id,"approved"));
-      document.querySelectorAll(".btn-reject").forEach(btn=>btn.onclick=()=>updateStatus(btn.dataset.id,"rejected"));
+  body.innerHTML = '<tr><td colspan="5" class="text-center">Loading…</td></tr>';
+  uploadedBody.innerHTML = '';
+
+  let approved = 0, pending = 0, rejected = 0;
+
+  const snap = await db.collection("visaApplications").get();
+  body.innerHTML = "";
+
+  if (snap.empty) {
+    document.getElementById("noApplications").style.display = "block";
+    return;
+  }
+
+  snap.forEach(doc => {
+    const d = doc.data();
+    const status = d.status || "pending";
+
+    // Count status
+    if (status === "approved") approved++;
+    else if (status === "rejected") rejected++;
+    else pending++;
+
+    // Show in first table (all applications)
+    body.innerHTML += `
+      <tr>
+        <td>${d.fullName || "–"}</td>
+        <td>${d.email || "–"}</td>
+        <td>${d.visaType || "–"}</td>
+        <td><span class="status-badge status-${status}">${status.charAt(0).toUpperCase() + status.slice(1)}</span></td>
+        <td>
+          <button class="btn btn-sm btn-approve" data-id="${doc.id}" ${status === "approved" ? "disabled" : ""}>Approve</button>
+          <button class="btn btn-sm btn-reject" data-id="${doc.id}" ${status === "rejected" ? "disabled" : ""}>Reject</button>
+        </td>
+      </tr>
+    `;
+
+    // If user has uploaded both photo and passport
+    if (d.photoUrl && d.passportUrl) {
+      uploadedBody.innerHTML += `
+        <tr>
+          <td>${d.fullName || "–"}</td>
+          <td>${d.email || "–"}</td>
+          <td>${d.visaType || "–"}</td>
+          <td>
+            <input type="number" class="form-control" id="amount-${doc.id}" value="${d.paymentAmount || ''}" placeholder="Enter amount">
+          </td>
+          <td>
+            <button class="btn btn-sm btn-primary" onclick="setPaymentAmount('${doc.id}')">Save</button>
+          </td>
+        </tr>
+      `;
     }
+  });
+
+  document.getElementById("approvedCount").innerText = approved;
+  document.getElementById("pendingCount").innerText = pending;
+  document.getElementById("rejectedCount").innerText = rejected;
+
+  document.querySelectorAll(".btn-approve").forEach(btn => btn.onclick = () => updateStatus(btn.dataset.id, "approved"));
+  document.querySelectorAll(".btn-reject").forEach(btn => btn.onclick = () => updateStatus(btn.dataset.id, "rejected"));
+}
+async function setPaymentAmount(docId) {
+  const amount = document.getElementById(`amount-${docId}`).value;
+  if (!amount || isNaN(amount) || Number(amount) <= 0) {
+    alert("Please enter a valid amount.");
+    return;
+  }
+
+  try {
+    await db.collection("visaApplications").doc(docId).update({
+      paymentAmount: Number(amount),
+      paymentStatus: "pending"
+    });
+    alert("Amount updated successfully.");
+  } catch (err) {
+    console.error(err);
+    alert("Failed to update amount.");
+  }
+}
+
 
     async function updateStatus(id,status) {
       await db.collection("visaApplications").doc(id).update({status});
