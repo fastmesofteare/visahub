@@ -108,8 +108,8 @@
         const uploadToCloudinary = async (file) => {
           const formData = new FormData();
           formData.append('file', file);
-          formData.append('upload_preset', 'deqadda2e');
-          const res = await axios.post('https://api.cloudinary.com/v1_1/YOUR_CLOUD_NAME/upload', formData);
+            formData.append('upload_preset', 'loan_app_uploads');
+          const res = await axios.post('https://api.cloudinary.com/v1_1/deqadda2e/upload', formData);
           return res.data.secure_url;
         };
 
