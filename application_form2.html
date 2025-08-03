@@ -91,7 +91,27 @@
           </select>
         </div>
       </div>
+      <div class="form-group">
+    <label for="travelingDate">Traveling Date <span class="required-indicator">*</span></label>
+    <input type="date"
+           id="travelingDate"
+           name="travelingDate"
+           required
+           min="YYYY-MM-DD" aria-describedby="travelingDateHelp"
+           class="form-control">
+    <small id="travelingDateHelp" class="form-text text-muted">Please select your intended date of departure.</small>
+</div>
 
+<div class="form-group">
+    <label for="returningDate">Returning Date <span class="required-indicator">*</span></label>
+    <input type="date"
+           id="returningDate"
+           name="returningDate"
+           required
+           min="YYYY-MM-DD" aria-describedby="returningDateHelp"
+           class="form-control">
+    <small id="returningDateHelp" class="form-text text-muted">Please select your intended date of return. Must be on or after your traveling date.</small>
+</div>
       <h4 class="text-primary fw-bold mt-5">Passport Information</h4>
       <div class="row g-3">
         <div class="col-md-6">
