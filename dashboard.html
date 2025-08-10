@@ -3,24 +3,67 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Applicant Dashboard - Visa|Lor</title>
+  <title>Applicant Dashboard - Visa|Lord</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
   <style>
-    .upload-card, .payment-card {
+    body { background: #f6f8fa; }
+    .upload-card, .payment-card, .downloading-card {
       margin-top: 2rem;
       padding: 2rem;
       border-radius: 10px;
       border: 1px solid #e0e0e0;
+      background: #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+    .dashboard-header {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      padding: 1.5rem 2rem;
+      margin-bottom: 2rem;
+    }
+    .navbar-brand img { width: 40px; height: 40px; }
+    .navbar { background: #fff; }
+    @media (max-width: 700px) {
+      .dashboard-header { padding: 1rem; }
+      .upload-card, .payment-card, .downloading-card { padding: 1rem; }
     }
   </style>
 </head>
 <body>
+  <header>
+    <nav class="navbar navbar-expand-lg navbar-light bg-white position-absolute w-100 px-lg-5 px-2" style="z-index:3;">
+      <div class="container-fluid">
+        <a class="navbar-brand d-flex align-items-center gap-2" href="index.html">
+          <img src="1000205315-removebg-preview.png" alt="SoftGap Logo" style="width:40px; height:40px;">
+          <span class="fw-bold">Visa Lord</span>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-end" id="mainNav" style="color: black;">
+          <ul class="navbar-nav mb-2 mb-lg-0 gap-lg-5">
+            <li class="nav-item">
+              <a class="nav-link" href="index.html">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="services.html">Visa</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="contact.html">Contact Us</a>
+            </li>
+          </ul>
+          <div id="navbarUser" class="ms-3"></div>
+        </div>
+      </div>
+    </nav>
+  </header>
   <div class="container py-5">
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="dashboard-header d-flex justify-content-between align-items-center mb-4">
       <h2 class="fw-bold">Visa Application Dashboard</h2>
       <button id="logoutBtn" class="btn btn-danger">Logout</button>
     </div>
@@ -58,11 +101,18 @@
         <div id="uploadStatus" class="mt-2 text-info"></div>
       </div>
 
-      <div class="payment-card" id="paymentCard">
-        <h5 class="text-primary">Step 2: Make Payment</h5>
-        <p class="text-muted">Your documents have been submitted. Please make the payment to finalize your application.</p>
-        <button id="makePaymentBtn" class="btn btn-primary btn-lg" disabled>Make Payment</button>
+      <div class="downloading-card" id="downloadingcard">
+        <h5 class="text-primary">Download your Visa Approval Letter</h5>
+        <p class="text-muted">This letter will be available when the admin uploads it for you.</p>
+        <button id="downloadApprovalLetterBtn" class="btn btn-primary btn-lg" style="display:none">Download Approval Letter</button>
+        <span id="downloadApprovalLetterMsg" class="text-info"></span>
       </div>
+    </div>
+
+    <div class="payment-card" id="paymentCard">
+      <h5 class="text-primary">Step 3: Make Payment</h5>
+      <p class="text-muted">Your documents have been submitted. Please make the payment to finalize your application.</p>
+      <button id="makePaymentBtn" class="btn btn-primary btn-lg" disabled>Make Payment</button>
     </div>
 
     <div id="continueLink" class="mt-4 d-none">
@@ -87,7 +137,7 @@
     const photoInput = document.getElementById('photoFile');
     const passportInput = document.getElementById('passportFile');
     const uploadBtn = document.getElementById('uploadBothBtn');
-
+    const downloadApprovalLetterBtn = document.getElementById('downloadApprovalLetterBtn');
     photoInput.addEventListener('change', checkFilesSelected);
     passportInput.addEventListener('change', checkFilesSelected);
 
@@ -107,10 +157,10 @@
       try {
         const uploadToCloudinary = async (file) => {
           const formData = new FormData();
-          formData.append('file', file);
-            formData.append('upload_preset', 'loan_app_uploads');
-          const res = await axios.post('https://api.cloudinary.com/v1_1/deqadda2e/upload', formData);
-          return res.data.secure_url;
+        formData.append('file', file);
+        formData.append('upload_preset', 'visa_public_uploads'); // use your new preset name
+        const res = await axios.post('https://api.cloudinary.com/v1_1/deqadda2e/upload', formData);
+        console.log(res.data.secure_url); // This is your public download link!
         };
 
         const photoUrl = await uploadToCloudinary(photoFile);
@@ -163,12 +213,45 @@
           document.getElementById('uploadStatus').textContent = 'Documents already uploaded.';
           uploadBtn.disabled = true;
           document.getElementById('makePaymentBtn').disabled = false;
+        } else {
+          document.getElementById('makePaymentBtn').disabled = true;
         }
         if (data.paymentStatus === 'paid') {
           document.getElementById('paymentCard').innerHTML = `<h5 class="text-primary">Step 2: Make Payment</h5><p class="text-success fw-bold">Payment confirmed.</p>`;
         }
+        // Show approval letter download button if admin uploaded
+        if (data.approvalLetterUrl) {
+          downloadApprovalLetterBtn.style.display = 'inline-block';
+          document.getElementById('downloadApprovalLetterMsg').textContent = "";
+          // Set up automatic download
+          downloadApprovalLetterBtn.onclick = function () {
+            // Extract filename from URL or use a default
+            let filename = "Visa_Approval_Letter.pdf";
+            try {
+              const urlParts = data.approvalLetterUrl.split('/');
+              const lastPart = urlParts[urlParts.length - 1];
+              filename = lastPart.split('?')[0];
+            } catch (e) {}
+            const a = document.createElement('a');
+            a.href = data.approvalLetterUrl;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+          }
+        } else {
+          downloadApprovalLetterBtn.style.display = 'none';
+          document.getElementById('downloadApprovalLetterMsg').textContent = "Approval letter not uploaded yet. Please check back soon.";
+        }
+      } else {
+        document.getElementById('approvedActions').classList.add('d-none');
       }
     });
+
+    document.getElementById("logoutBtn").onclick = async () => {
+      await auth.signOut();
+      window.location.href = "index.html";
+    };
   </script>
 </body>
 </html>
