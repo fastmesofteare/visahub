@@ -6,7 +6,6 @@ body {
 }
 
 .hero-section {
-  background: url('https://images.unsplash.com/photo-1655722724451-0df658a2ab23?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D') center/cover no-repeat;
   min-height: 400px;
 }
 
@@ -37,7 +36,30 @@ body {
   z-index: 2;
   width: 300px;
 }
+.whatsapp-floater {
+      position: fixed;
+      width: 60px;
+      height: 60px;
+      bottom: 40px;
+      right: 40px;
+      background-color: #25D366;
+      color: #FFF;
+      border-radius: 50px;
+      text-align: center;
+      font-size: 30px;
+      box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.2);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      transition: transform 0.2s ease-in-out;
+    }
 
+    .whatsapp-floater:hover {
+      transform: scale(1.1);
+      color: #FFF;
+    }
 /* Responsive tweaks (Bootstrap handles most) */
 @media (max-width: 991px) {
   .hero-img {
@@ -52,15 +74,17 @@ body {
 
 .nav-item a {
   color: white;
-  font-size: 18;
+  font-size: 30px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .nav-item :hover {
-  color: white;
-  font-size: 18;
-  text-decoration: underline;
-  padding: 2px 2px;
+  color: black;
+  font-size: 30px;
+  padding: 5px 5px;
   border-radius: 12px;
+  background-color: white;
+  border-radius: 10px;
 }
 
 /* Fix navbar background for mobile */
@@ -81,14 +105,16 @@ body {
   padding: 60px 0 40px 0;
   animation: shake 0.5s ease-in-out infinite;
 }
+/* Shake animation 
 @keyframes shake{
-  0%{transform: translateX(0);}
-  25%{transform: translateX(-3px);}
-  50%{transform: translateX(3px);}
-  75%{transform: translateX(-3px);}
-  100%{transform: translateX(0);}
+  0%{transform: transition(0);}
+  25%{transform: transition(-3px);}
+  50%{transform: transition(3px);}
+  75%{transform: transition(-3px);}
+  100%{transform: transition(0);}
 
 }
+  */
 .hero-container {
   background: black;
   padding: 40px 20px;

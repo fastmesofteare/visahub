@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Visa Lord</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Styling adjustments for the About page to match the dark theme */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #000;
+            color: #f0f0f0; /* Light text color for dark background */
+        }
+        .about-hero {
+            text-align: center;
+            padding: 150px 20px 50px 20px; /* Increased top padding for navbar */
+            background: transparent; /* Matches the dark theme */
+        }
+        .about-hero h1 {
+            font-size: 3em;
+            color: #fff;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .about-hero p {
+            font-size: 1.2em;
+            color: #ccc;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        .about-container {
+            max-width: 900px;
+            margin: 20px auto 40px auto;
+            padding: 20px;
+        }
+        .about-container h2 {
+            font-size: 2.2em;
+            color: #fff;
+            border-bottom: 2px solid #f06273; /* Using an accent color from your site */
+            padding-bottom: 10px;
+            margin-top: 40px;
+            font-weight: bold;
+        }
+        .about-container .section {
+            margin-bottom: 30px;
+        }
+        .about-container .section p, .about-container .section ul {
+            font-size: 1.1em;
+            color: #dcdcdc;
+        }
+        .about-container .section ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        .about-container .section ul li {
+            background: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="%23f06273" class="bi bi-check-circle-fill" viewBox="0 0 16 16"><path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/></svg>') no-repeat left center;
+            padding-left: 25px;
+            margin-bottom: 10px;
+        }
+        .highlight {
+            font-weight: bold;
+            color: #2bbbad; /* Using another accent color from your site */
+        }
+        .whatsapp-floater {
+            position: fixed;
+            width: 60px;
+            height: 60px;
+            bottom: 40px;
+            right: 40px;
+            background-color: #25D366;
+            color: #FFF;
+            border-radius: 50px;
+            text-align: center;
+            font-size: 30px;
+            box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            transition: transform 0.2s ease-in-out;
+        }
+        .whatsapp-floater:hover {
+            transform: scale(1.1);
+            color: #FFF;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-transparent position-absolute w-100 px-lg-5 px-2" style="z-index:3;">
+            <div class="container-fluid">
+                <a class="navbar-brand d-flex align-items-center gap-2" href="index.html">
+                    <img src="1000205315-removebg-preview.png" alt="Visa Lord Logo" style="width:40px; height:40px;">
+                    <span class="fw-bold">Visa Lord</span>
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse justify-content-end" id="mainNav">
+                    <ul class="navbar-nav mb-2 mb-lg-0 gap-lg-5">
+                        <li class="nav-item">
+                            <a class="nav-link" href="index.html">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="services.html">Visa</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="contact.html">Contact Us</a>
+                        </li>
+                    </ul>
+                    <div id="navbarUser" class="ms-3"></div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="about-hero">
+        <h1>About Visa Lord</h1>
+        <p>Your trusted partner in navigating the complexities of visa sponsorship and unlocking global opportunities.</p>
+    </div>
+
+    <div class="container">
+        <div class="row vision-mission justify-content-center mb-4">
+            <div class="col-md-5 bg-white bg-opacity-10 rounded p-4 m-2">
+                <h2 class="text-light" style="border:none; color: #fff !important; font-size: 1.8em;">Our Vision</h2>
+                <p class="text-light">
+                    To become the most trusted global visa sponsorship platform, connecting individuals to educational, work, and travel opportunities worldwide.
+                </p>
+            </div>
+            <div class="col-md-5 bg-white bg-opacity-10 rounded p-4 m-2">
+                <h2 class="text-light" style="border:none; color: #fff !important; font-size: 1.8em;">Our Mission</h2>
+                <p class="text-light">
+                    To simplify the visa sponsorship process by providing transparent, accessible, and reliable support for applicants seeking opportunities abroad.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="about-container">
+        <div class="section">
+            <h2>What We Do</h2>
+            <p>
+                Visa Lord is a premier sponsorship facilitator. We don't just provide information; we provide pathways. Our core services include:
+            </p>
+            <ul>
+                <li><strong>Connecting Talent with Opportunity:</strong> We partner with a global network of companies, educational institutions, and conference organizers to bring you verified sponsorship opportunities for work, study, and tourism.</li>
+                <li><strong>Streamlined Application Process:</strong> Our platform guides you through a clear, step-by-step application process, from filling out the initial form to submitting the required documents.</li>
+                <li><strong>Expert Guidance and Support:</strong> We act as the bridge between you and the sponsoring entities, ensuring your application is submitted correctly and efficiently to the respective embassies for approval.</li>
+                <li><strong>Transparency and Trust:</strong> We believe in a transparent process. You will be kept informed at every stage, from embassy submission to receiving your acceptance letter and final visa stamping.</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>Why Choose Visa Lord?</h2>
+            <p>
+                Choosing a partner for your international journey is a significant decision. Here’s why we are the right choice for you:
+            </p>
+            <ul>
+                <li><span class="highlight">Focus on Sponsorship:</span> We specialize in sponsorship, giving you a direct line to the opportunities you need.</li>
+                <li><span class="highlight">Global Network:</span> Access a wide range of opportunities in top destinations like the USA, Canada, UK, Schengen Area, and more.</li>
+                <li><span class="highlight">Simplicity:</span> We've designed our platform to be user-friendly and intuitive, removing the usual stress and confusion from the visa process.</li>
+                <li><span class="highlight">Dedicated to Your Success:</span> Your dream is our commitment. We are dedicated to providing the support you need to successfully secure your visa and begin your international adventure.</li>
+            </ul>
+            <p>
+                <strong>Join us at Visa Lord, and let's take the first step toward your global future, together.</strong>
+            </p>
+        </div>
+    </div>
+
+    <footer style="background-color: #0d1b2a; color: white;" class="pt-5 pb-0">
+        <hr style="border-bottom: 10px solid white;">
+        <div class="container">
+            <div class="row footer-section text-center text-lg-start">
+                <div class="col-lg-6 mb-4 mb-lg-0">
+                    <h4 class="text-info">OUR SERVICES</h4>
+                    <ul class="list-unstyled">
+                        <li>Student Visa</li>
+                        <li>Working Visa</li>
+                        <li>Tourism Visa</li>
+                        <li>Conference Visa</li>
+                    </ul>
+                </div>
+                <div class="col-lg-6">
+                    <h4 class="text-info">CONTACT US</h4>
+                    <ul class="list-unstyled">
+                        <li>info@visahub.online, support@visahub.online</li>
+                        <li>www.visahub.onine</li>
+                        <li style="margin-top: 20px;"><strong>New York (Regional Office): <br> </strong>448 Broadway, 2nd Floor, New York, NY 10013, United States</li>
+                        <li><strong>Texas (Regional Office): <br></strong>11823 North Fwy, Suite 218, Houston, TX 77060, United States</li>
+                        <li><strong>Dubai (Global Delivery Center): <br></strong>Office # 504-724, Al Muraqabat Deira, Dubai, United Arab Emirates</li>
+                    </ul>
+                </div>
+            </div>
+            <div style="background-color: #1b263b;" class="footer-bottom text-center py-3 mt-4">
+                © 2025 Visa Hub. All rights reserved.
+            </div>
+            <a style="text-decoration: none; color: #000;" href="admin_panel.html">ad</a>
+        </div>
+    </footer>
+
+    <a href="https://wa.me/13347691945" class="whatsapp-floater" target="_blank" rel="noopener noreferrer">
+        <i class="bi bi-whatsapp"></i>
+    </a>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyDO5Bpeg0Ewg6lUzbIaI-Kp4wC9ET6OQfE",
+            authDomain: "visasponsor-e62c2.firebaseapp.com",
+            projectId: "visasponsor-e62c2",
+            storageBucket: "visasponsor-e62c2.firebasestorage.app",
+            messagingSenderId: "179101134570",
+            appId: "1:179101134570:web:bea801f12c1a620717b193",
+            measurementId: "G-NE7T0PPG6K"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+
+        function setNavbarUser(user) {
+            const navbarUser = document.getElementById('navbarUser');
+            if (!user) {
+                navbarUser.innerHTML = ""; // Or you can add a login button here
+                return;
+            }
+            const avatarUrl = user.photoURL || `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(user.displayName || user.email || 'User')}`;
+            navbarUser.innerHTML = `
+                <div class="dropdown">
+                    <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle text-white" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <img src="${avatarUrl}" alt="avatar" width="38" height="38" class="rounded-circle border border-2 border-light me-2">
+                        <span class="d-none d-md-inline fw-bold">${user.displayName || user.email}</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                        <li><a class="dropdown-item" href="dashboard.html"><i class="bi bi-speedometer2 me-2"></i>Go Dashboard</a></li>
+                        <li><span class="dropdown-item-text">${user.email}</span></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-danger" href="#" id="logoutBtn">Logout</a></li>
+                    </ul>
+                </div>
+            `;
+            document.getElementById('logoutBtn').onclick = function() {
+                auth.signOut().then(() => {
+                    window.location.href = "index.html";
+                });
+            };
+        }
+
+        auth.onAuthStateChanged(function(user) {
+            setNavbarUser(user);
+        });
+    </script>
+</body>
+</html>
