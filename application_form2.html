@@ -2,12 +2,223 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Visa Application - Step 2</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
-    body { background: #f2f2f2; padding-top: 20px; }
-    .container { max-width: 800px; background: #fff; padding: 30px; border-radius: 10px; box-shadow: 0 0 10px #ccc; }
-    .form-label { font-weight: 500; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+      width: 100%;
+    }
+
+    body {
+      background: #f2f2f2;
+      padding-top: 20px;
+      padding-bottom: 20px;
+    }
+
+    .container {
+      max-width: 800px;
+      background: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px #ccc;
+      margin: 0 auto;
+    }
+
+    .form-label {
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+
+    .form-control, .form-select {
+      border-radius: 5px;
+      border: 1px solid #ddd;
+      padding: 10px 12px;
+      font-size: 16px;
+    }
+
+    .form-control:focus, .form-select:focus {
+      border-color: #0d6efd;
+      box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .row {
+      margin-bottom: 1rem;
+    }
+
+    h4 {
+      margin-top: 2rem;
+      margin-bottom: 1.5rem;
+      font-size: 1.25rem;
+    }
+
+    h2 {
+      font-size: 1.75rem;
+      font-weight: 600;
+      margin-bottom: 2rem;
+    }
+
+    .required-indicator {
+      color: #dc3545;
+    }
+
+    .btn-primary {
+      padding: 12px 20px;
+      font-size: 16px;
+      border-radius: 5px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+      background-color: #0b5ed7;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-primary:active {
+      transform: translateY(0);
+    }
+
+    small.form-text {
+      display: block;
+      margin-top: 5px;
+      font-size: 0.875rem;
+      color: #6c757d;
+    }
+
+    #formMsg {
+      padding: 12px;
+      border-radius: 5px;
+      text-align: center;
+      font-weight: 500;
+    }
+
+    /* Mobile Responsive Styles */
+    @media (max-width: 768px) {
+      body {
+        padding-top: 10px;
+        padding-bottom: 10px;
+      }
+
+      .container {
+        padding: 20px;
+        border-radius: 8px;
+        max-width: 100%;
+        margin: 0 10px;
+      }
+
+      h2 {
+        font-size: 1.5rem;
+        margin-bottom: 1.5rem;
+      }
+
+      h4 {
+        font-size: 1.1rem;
+        margin-top: 1.5rem;
+        margin-bottom: 1rem;
+      }
+
+      .row {
+        margin-bottom: 0;
+      }
+
+      .col-md-6 {
+        width: 100% !important;
+        padding-right: 0 !important;
+        padding-left: 0 !important;
+        margin-bottom: 1rem;
+      }
+
+      .row.g-3 {
+        gap: 0 !important;
+      }
+
+      .row.g-3 > [class*='col-'] {
+        padding-right: 0 !important;
+        padding-left: 0 !important;
+        margin-bottom: 1.5rem;
+      }
+
+      .form-label {
+        font-size: 0.95rem;
+        margin-bottom: 6px;
+      }
+
+      .form-control, .form-select {
+        padding: 10px;
+        font-size: 16px;
+        border-radius: 4px;
+      }
+
+      .form-group {
+        margin-bottom: 1.2rem;
+      }
+
+      .btn-primary {
+        padding: 10px 16px;
+        font-size: 15px;
+        width: 100%;
+      }
+
+      .d-grid {
+        margin-top: 1.5rem;
+      }
+
+      small.form-text {
+        font-size: 0.8rem;
+        margin-top: 4px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: 15px;
+        border-radius: 6px;
+        margin: 0 5px;
+      }
+
+      h2 {
+        font-size: 1.3rem;
+        margin-bottom: 1.2rem;
+      }
+
+      h4 {
+        font-size: 1rem;
+        margin-top: 1.2rem;
+        margin-bottom: 0.8rem;
+      }
+
+      .form-label {
+        font-size: 0.9rem;
+      }
+
+      .form-control, .form-select {
+        padding: 8px;
+        font-size: 16px;
+      }
+
+      .btn-primary {
+        padding: 10px 12px;
+        font-size: 14px;
+      }
+
+      #formMsg {
+        font-size: 0.9rem;
+        padding: 10px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -15,7 +226,7 @@
     <h2 class="mb-4 text-center">Visa Application - Step 2</h2>
     <form id="visaStep2Form">
       
-      <h4 class="text-primary fw-bold mt-5">Other Personal Information</h4>
+      <h4 class="text-primary fw-bold">Other Personal Information</h4>
       <div class="row g-3">
         <div class="col-md-6">
           <label for="occupation" class="form-label">Occupation</label>
@@ -58,7 +269,7 @@
         </div>
       </div>
 
-      <h4 class="text-primary fw-bold mt-5">Travel Information</h4>
+      <h4 class="text-primary fw-bold">Travel Information</h4>
       <div class="row g-3">
         <div class="col-md-6">
           <label for="purposes" class="form-label">Purpose of Traveling</label>
@@ -91,28 +302,20 @@
           </select>
         </div>
       </div>
-      <div class="form-group">
-    <label for="travelingDate">Traveling Date <span class="required-indicator">*</span></label>
-    <input type="date"
-           id="travelingDate"
-           name="travelingDate"
-           required
-           min="YYYY-MM-DD" aria-describedby="travelingDateHelp"
-           class="form-control">
-    <small id="travelingDateHelp" class="form-text text-muted">Please select your intended date of departure.</small>
-</div>
 
-<div class="form-group">
-    <label for="returningDate">Returning Date <span class="required-indicator">*</span></label>
-    <input type="date"
-           id="returningDate"
-           name="returningDate"
-           required
-           min="YYYY-MM-DD" aria-describedby="returningDateHelp"
-           class="form-control">
-    <small id="returningDateHelp" class="form-text text-muted">Please select your intended date of return. Must be on or after your traveling date.</small>
-</div>
-      <h4 class="text-primary fw-bold mt-5">Passport Information</h4>
+      <div class="form-group">
+        <label for="travelingDate" class="form-label">Traveling Date <span class="required-indicator">*</span></label>
+        <input type="date" id="travelingDate" name="travelingDate" required aria-describedby="travelingDateHelp" class="form-control">
+        <small id="travelingDateHelp" class="form-text text-muted">Please select your intended date of departure.</small>
+      </div>
+
+      <div class="form-group">
+        <label for="returningDate" class="form-label">Returning Date <span class="required-indicator">*</span></label>
+        <input type="date" id="returningDate" name="returningDate" required aria-describedby="returningDateHelp" class="form-control">
+        <small id="returningDateHelp" class="form-text text-muted">Please select your intended date of return. Must be on or after your traveling date.</small>
+      </div>
+
+      <h4 class="text-primary fw-bold">Passport Information</h4>
       <div class="row g-3">
         <div class="col-md-6">
           <label for="passportNumber" class="form-label">Passport Number</label>
@@ -196,26 +399,25 @@
       if (!user) return;
 
       const formData = {
-  occupation: document.getElementById("occupation").value.trim(),
-  nationality: document.getElementById("nationality").value.trim(),
-  currentResidenceCountry: document.getElementById("currentResidenceCountry").value.trim(),
-  provinceState: document.getElementById("provinceState").value.trim(),
-  idType: document.getElementById("idType").value.trim(),
-  idNumber: document.getElementById("idNumber").value.trim(),
-  staffId: document.getElementById("staffId").value.trim(),
-  purposes: document.getElementById("purposes").value.trim(),
-  countryToVisa: document.getElementById("countryToVisa").value.trim(),
-  provinceToVisa: document.getElementById("provinceToVisa").value.trim(),
-  visaType: document.getElementById("visaType").value.trim(),
-  travelingDate: document.getElementById("travelingDate").value,    // <-- add this
-  returningDate: document.getElementById("returningDate").value,    // <-- and this
-  passportNumber: document.getElementById("passportNumber").value.trim(),
-  passportCountry: document.getElementById("passportCountry").value.trim(),
-  passportExpiry: document.getElementById("passportExpiry").value,
-  progress: 3,
-  updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-};
-
+        occupation: document.getElementById("occupation").value.trim(),
+        nationality: document.getElementById("nationality").value.trim(),
+        currentResidenceCountry: document.getElementById("currentResidenceCountry").value.trim(),
+        provinceState: document.getElementById("provinceState").value.trim(),
+        idType: document.getElementById("idType").value.trim(),
+        idNumber: document.getElementById("idNumber").value.trim(),
+        staffId: document.getElementById("staffId").value.trim(),
+        purposes: document.getElementById("purposes").value.trim(),
+        countryToVisa: document.getElementById("countryToVisa").value.trim(),
+        provinceToVisa: document.getElementById("provinceToVisa").value.trim(),
+        visaType: document.getElementById("visaType").value.trim(),
+        travelingDate: document.getElementById("travelingDate").value,
+        returningDate: document.getElementById("returningDate").value,
+        passportNumber: document.getElementById("passportNumber").value.trim(),
+        passportCountry: document.getElementById("passportCountry").value.trim(),
+        passportExpiry: document.getElementById("passportExpiry").value,
+        progress: 3,
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      };
 
       try {
         await db.collection("visaApplications").doc(user.uid).set(formData, { merge: true });
