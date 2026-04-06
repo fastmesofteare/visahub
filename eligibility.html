@@ -3,60 +3,296 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Application Priview | Visa Lord</title>
+    <title>Application Preview | Visa Lord</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
-    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     <link rel="stylesheet" href="style.css" />
     <style>
-        body { background: #eef2f7; padding: 20px; }
-        .dashboard-container { max-width: 900px; margin: auto; background: #fff; padding: 30px; border-radius: 15px; box-shadow: 0 0 15px rgba(0,0,0,0.1); }
-        h2 { text-align: center; font-weight: bold; margin-bottom: 20px; }
-        .info-block { margin-bottom: 20px; }
-        .info-block h5 { margin-bottom: 10px; font-weight: 600; }
-        .info-block p { margin-bottom: 0; }
-        .btn-logout { float: right; }
-        #submitApplicationWrapper { text-align: center; margin-top: 20px; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+            padding: 20px; 
+            min-height: 100vh;
+        }
+        .dashboard-container { 
+            max-width: 900px; 
+            margin: auto; 
+            background: #fff; 
+            padding: 30px; 
+            border-radius: 15px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .header-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 20px;
+        }
+        h2 { 
+            font-weight: bold; 
+            color: #333;
+            margin: 0;
+        }
+        .user-email {
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        .btn-logout { 
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border: none;
+            color: white;
+            font-weight: 600;
+        }
+        .btn-logout:hover {
+            background: linear-gradient(135deg, #f5576c 0%, #f093fb 100%);
+            color: white;
+        }
+        .info-block { 
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f9f9f9;
+            border-left: 4px solid #667eea;
+            border-radius: 8px;
+        }
+        .info-block h5 { 
+            margin-bottom: 15px; 
+            font-weight: 700;
+            color: #333;
+            font-size: 16px;
+        }
+        .info-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        .info-row.full {
+            grid-template-columns: 1fr;
+        }
+        .info-item p { 
+            margin-bottom: 0;
+            font-size: 14px;
+        }
+        .info-item strong {
+            color: #667eea;
+            font-weight: 600;
+        }
+        .info-item span {
+            color: #555;
+            word-break: break-word;
+        }
+        .no-data {
+            color: #999;
+            font-style: italic;
+        }
+        #submitApplicationWrapper { 
+            text-align: center; 
+            margin: 40px auto;
+            padding: 20px;
+        }
+        .btn-submit {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            padding: 12px 40px;
+            font-size: 16px;
+            font-weight: 600;
+            color: white;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        .btn-submit:hover {
+            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+        .btn-submit:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        .spinner-border {
+            color: #667eea !important;
+        }
+        .loading-message {
+            color: #667eea;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+        .alert-message {
+            margin-top: 15px;
+            border-radius: 8px;
+        }
+        footer {
+            margin-top: 50px;
+            background-color: #0d1b2a !important;
+            color: white;
+        }
+        .loading-container {
+            text-align: center;
+            padding: 40px;
+        }
+        .spinner-large {
+            width: 50px;
+            height: 50px;
+            margin: 20px auto;
+        }
+
+        @media (max-width: 768px) {
+            .info-row {
+                grid-template-columns: 1fr;
+            }
+            .header-section {
+                flex-direction: column;
+                gap: 15px;
+            }
+            .btn-logout {
+                width: 100%;
+            }
+        }
     </style>
 </head>
 <body>
+
 <div class="dashboard-container">
-    <button class="btn btn-danger btn-sm btn-logout" id="logoutBtn">Logout</button>
-    <h2>Welcome to Your Visa Application Dashboard</h2>
-    <div id="userEmail" class="text-center text-muted mb-4"></div>
-
-    <div class="info-block">
-        <h5>Personal Information</h5>
-        <p><strong>Full Name:</strong> <span id="fullName"></span></p>
-        <p><strong>Email:</strong> <span id="email"></span></p>
-        <p><strong>Phone:</strong> <span id="phone"></span></p>
-        <p><strong>Address:</strong> <span id="address"></span></p>
-        <p><strong>Date of Birth:</strong> <span id="dob"></span></p>
-        <p><strong>Marital Status:</strong> <span id="maritalStatus"></span></p>
+    <div class="header-section">
+        <div>
+            <h2>📋 Visa Application Preview</h2>
+            <div class="user-email" id="userEmail">Loading...</div>
+        </div>
+        <button class="btn btn-logout btn-sm" id="logoutBtn">
+            <i class="bi bi-box-arrow-right"></i> Logout
+        </button>
     </div>
 
-    <div class="info-block">
-        <h5>Application Information</h5>
-        <p><strong>Occupation:</strong> <span id="occupation"></span></p>
-        <p><strong>Nationality:</strong> <span id="nationality"></span></p>
-        <p><strong>Current Residence Country:</strong> <span id="currentResidenceCountry"></span></p>
-        <p><strong>Province / State:</strong> <span id="provinceState"></span></p>
-        <p><strong>Country Applying For:</strong> <span id="countryToVisa"></span></p>
-        <p><strong>Visa Type:</strong> <span id="visaType"></span></p>
-        <p><strong>ID Type:</strong> <span id="idType"></span></p>
-        <p><strong>ID Number:</strong> <span id="idNumber"></span></p>
-        <p><strong>Staff ID:</strong> <span id="staffId"></span></p>
-        <p><strong>Application Submitted:</strong> <span id="submittedAt"></span></p>
+    <!-- Loading State -->
+    <div id="loadingState" class="loading-container">
+        <div class="spinner-border spinner-large" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="loading-message">Loading your application...</p>
+    </div>
+
+    <!-- Data Display State -->
+    <div id="dataState" style="display: none;">
+        <div class="info-block">
+            <h5><i class="bi bi-person-fill"></i> Personal Information</h5>
+            <div class="info-row">
+                <div class="info-item">
+                    <p><strong>Full Name:</strong></p>
+                    <p><span id="fullName" class="no-data">-</span></p>
+                </div>
+                <div class="info-item">
+                    <p><strong>Email:</strong></p>
+                    <p><span id="email" class="no-data">-</span></p>
+                </div>
+            </div>
+            <div class="info-row">
+                <div class="info-item">
+                    <p><strong>Phone:</strong></p>
+                    <p><span id="phone" class="no-data">-</span></p>
+                </div>
+                <div class="info-item">
+                    <p><strong>Date of Birth:</strong></p>
+                    <p><span id="dob" class="no-data">-</span></p>
+                </div>
+            </div>
+            <div class="info-row">
+                <div class="info-item">
+                    <p><strong>Marital Status:</strong></p>
+                    <p><span id="maritalStatus" class="no-data">-</span></p>
+                </div>
+                <div class="info-item">
+                    <p><strong>Nationality:</strong></p>
+                    <p><span id="nationality" class="no-data">-</span></p>
+                </div>
+            </div>
+            <div class="info-row full">
+                <div class="info-item">
+                    <p><strong>Address:</strong></p>
+                    <p><span id="address" class="no-data">-</span></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-block">
+            <h5><i class="bi bi-briefcase-fill"></i> Application Information</h5>
+            <div class="info-row">
+                <div class="info-item">
+                    <p><strong>Occupation:</strong></p>
+                    <p><span id="occupation" class="no-data">-</span></p>
+                </div>
+                <div class="info-item">
+                    <p><strong>Current Country:</strong></p>
+                    <p><span id="currentResidenceCountry" class="no-data">-</span></p>
+                </div>
+            </div>
+            <div class="info-row">
+                <div class="info-item">
+                    <p><strong>Province / State:</strong></p>
+                    <p><span id="provinceState" class="no-data">-</span></p>
+                </div>
+                <div class="info-item">
+                    <p><strong>Country Applying For:</strong></p>
+                    <p><span id="countryToVisa" class="no-data">-</span></p>
+                </div>
+            </div>
+            <div class="info-row">
+                <div class="info-item">
+                    <p><strong>Visa Type:</strong></p>
+                    <p><span id="visaType" class="no-data">-</span></p>
+                </div>
+                <div class="info-item">
+                    <p><strong>ID Type:</strong></p>
+                    <p><span id="idType" class="no-data">-</span></p>
+                </div>
+            </div>
+            <div class="info-row">
+                <div class="info-item">
+                    <p><strong>ID Number:</strong></p>
+                    <p><span id="idNumber" class="no-data">-</span></p>
+                </div>
+                <div class="info-item">
+                    <p><strong>Staff ID:</strong></p>
+                    <p><span id="staffId" class="no-data">-</span></p>
+                </div>
+            </div>
+            <div class="info-row full">
+                <div class="info-item">
+                    <p><strong>Submitted At:</strong></p>
+                    <p><span id="submittedAt" class="no-data">Not submitted yet</span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Error State -->
+    <div id="errorState" style="display: none;">
+        <div class="alert alert-danger alert-message" role="alert">
+            <h4 class="alert-heading">⚠️ Error Loading Data</h4>
+            <p id="errorMessage"></p>
+            <hr>
+            <p class="mb-0">Please try refreshing the page or contact support.</p>
+        </div>
     </div>
 </div>
 
-<div id="submitApplicationWrapper">
-    <button class="btn btn-success" id="submitApplication">Submit Application</button>
-    <div id="loadingSpinner" class="spinner-border text-success mt-2" style="display: none;" role="status">
-        <span class="visually-hidden">Loading...</span>
+<div id="submitApplicationWrapper" style="display: none;">
+    <button class="btn btn-submit" id="submitApplication">
+        <i class="bi bi-check-circle"></i> Submit Application
+    </button>
+    <div id="loadingSpinner" class="spinner-border text-success mt-3" style="display: none;" role="status">
+        <span class="visually-hidden">Submitting...</span>
     </div>
+    <div id="submitMessage"></div>
 </div>
+
 <footer style="background-color: #0d1b2a; color: white;" class="pt-5 pb-0">
   <hr style="border-bottom: 10px solid white;">
   <div class="container">
@@ -74,12 +310,11 @@
         <h4 class="text-info">CONTACT US</h4>
         <ul class="list-unstyled">
           <li>contact@visalord.online</li>
-          <li>+13347691945</li>
+          <li>+16616187032</li>
           <li>www.visahub.onine</li>
           <li style="margin-top: 20px;"><strong>New York (Regional Office): <br> </strong>448 Broadway, 2nd Floor, New York, NY 10013, United States</li>
-          <li ><strong>Texas (Regional Office): <br></strong>11823 North Fwy, Suite 218, Houston, TX 77060, United States</li>
+          <li><strong>Texas (Regional Office): <br></strong>11823 North Fwy, Suite 218, Houston, TX 77060, United States</li>
           <li><strong>Dubai (Global Delivery Center): <br></strong>Office # 504-724, Al Muraqabat Deira, Dubai, United Arab Emirates</li>
-
         </ul>
       </div>
     </div>
@@ -89,14 +324,17 @@
     <a style="text-decoration: none; color: #000;" href="admin_panel.html">ad</a>
   </div>
 </footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     const firebaseConfig = {
         apiKey: "AIzaSyDO5Bpeg0Ewg6lUzbIaI-Kp4wC9ET6OQfE",
         authDomain: "visasponsor-e62c2.firebaseapp.com",
         projectId: "visasponsor-e62c2",
-        storageBucket: "visasponsor-e62c2.appspot.com",
+        storageBucket: "visasponsor-e62c2.firebasestorage.app",
         messagingSenderId: "179101134570",
-        appId: "1:179101134570:web:bea801f12c1a620717b193"
+        appId: "1:179101134570:web:bea801f12c1a620717b193",
+        measurementId: "G-NE7T0PPG6K"
     };
 
     firebase.initializeApp(firebaseConfig);
@@ -104,67 +342,140 @@
     const auth = firebase.auth();
 
     let currentUser = null;
+    const loadingState = document.getElementById("loadingState");
+    const dataState = document.getElementById("dataState");
+    const errorState = document.getElementById("errorState");
+    const submitWrapper = document.getElementById("submitApplicationWrapper");
+
+    function hideAllStates() {
+        loadingState.style.display = "none";
+        dataState.style.display = "none";
+        errorState.style.display = "none";
+        submitWrapper.style.display = "none";
+    }
+
+    function showLoadingState() {
+        hideAllStates();
+        loadingState.style.display = "block";
+    }
+
+    function showDataState() {
+        hideAllStates();
+        dataState.style.display = "block";
+        submitWrapper.style.display = "block";
+    }
+
+    function showErrorState(error) {
+        hideAllStates();
+        errorState.style.display = "block";
+        document.getElementById("errorMessage").innerText = error || "An error occurred while loading your application data.";
+    }
 
     auth.onAuthStateChanged(async user => {
         if (!user) {
+            console.log("No user logged in, redirecting to index.html");
             window.location.href = "index.html";
             return;
         }
 
         currentUser = user;
+        showLoadingState();
         document.getElementById("userEmail").innerText = `Logged in as: ${user.email}`;
 
         try {
+            console.log("Fetching application data for user:", user.uid);
             const doc = await db.collection("visaApplications").doc(user.uid).get();
-            const data = doc.data();
-            if (!data) throw new Error("No application data found.");
+            
+            if (!doc.exists) {
+                console.log("No application document found");
+                showErrorState("No application data found. Please complete the application form first.");
+                return;
+            }
 
+            const data = doc.data();
+            console.log("Application data loaded:", data);
+
+            // List of all fields to populate
             const fields = [
                 "fullName", "email", "phone", "address", "dob", "maritalStatus",
                 "occupation", "nationality", "currentResidenceCountry", "provinceState",
                 "countryToVisa", "visaType", "idType", "idNumber", "staffId"
             ];
 
+            // Populate each field
             for (const field of fields) {
-                document.getElementById(field).innerText = data[field] || "-";
+                const element = document.getElementById(field);
+                if (element) {
+                    const value = data[field];
+                    element.innerText = value && value.trim() ? value : "-";
+                    element.classList.toggle("no-data", !value || !value.trim());
+                }
             }
 
-            document.getElementById("submittedAt").innerText = data.submittedAt?.toDate().toLocaleString() || "-";
+            // Handle submitted date
+            const submittedAtElement = document.getElementById("submittedAt");
+            if (data.submittedAt) {
+                try {
+                    submittedAtElement.innerText = data.submittedAt.toDate().toLocaleString();
+                    submittedAtElement.classList.remove("no-data");
+                } catch (e) {
+                    submittedAtElement.innerText = "-";
+                }
+            } else {
+                submittedAtElement.innerText = "Not submitted yet";
+                submittedAtElement.classList.add("no-data");
+            }
+
+            showDataState();
         } catch (error) {
-            alert("Failed to load data: " + error.message);
+            console.error("Error loading application data:", error);
+            showErrorState(error.message);
         }
     });
 
     document.getElementById("logoutBtn").addEventListener("click", async () => {
-        await auth.signOut();
-        window.location.href = "index.html";
+        try {
+            await auth.signOut();
+            window.location.href = "index.html";
+        } catch (error) {
+            console.error("Logout error:", error);
+            alert("Error during logout: " + error.message);
+        }
     });
 
     document.getElementById("submitApplication").addEventListener("click", async () => {
         const button = document.getElementById("submitApplication");
         const spinner = document.getElementById("loadingSpinner");
+        const message = document.getElementById("submitMessage");
 
         button.disabled = true;
         spinner.style.display = "inline-block";
+        message.innerHTML = "";
 
         try {
+            console.log("Submitting application for user:", currentUser.uid);
+            
             const docRef = db.collection("visaApplications").doc(currentUser.uid);
             await docRef.update({
-                submittedAt: new Date(),
-                progress: 4, // Add this line to update the progress
-                status: 'pending' // Set initial status as 'pending'
+                submittedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                progress: 4,
+                status: 'pending'
             });
 
-            alert("Application submitted successfully. You will now be redirected to your dashboard.");
-            window.location.href = "dashboard.html"; // This is the updated line
+            message.innerHTML = '<div class="alert alert-success alert-message mt-3"><i class="bi bi-check-circle"></i> Application submitted successfully! Redirecting to dashboard...</div>';
+            
+            setTimeout(() => {
+                window.location.href = "dashboard.html";
+            }, 2000);
         } catch (error) {
-            alert("Submission failed: " + error.message);
+            console.error("Submission error:", error);
+            message.innerHTML = '<div class="alert alert-danger alert-message mt-3"><i class="bi bi-exclamation-circle"></i> Submission failed: ' + error.message + '</div>';
         } finally {
             button.disabled = false;
             spinner.style.display = "none";
         }
     });
 </script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>

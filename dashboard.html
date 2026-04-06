@@ -3,51 +3,314 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Applicant Dashboard - Visa|Lord</title>
+  <title>Dashboard - Visa|Lord</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
   <link rel="stylesheet" href="style.css" />
   <style>
-    body { background: #f6f8fa; }
-    .upload-card, .payment-card, .downloading-card {
-      margin-top: 2rem;
-      padding: 2rem;
-      border-radius: 10px;
-      border: 1px solid #e0e0e0;
-      background: #fff;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { 
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      padding: 20px;
+      min-height: 100vh;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
-    .dashboard-header {
-      background: #fff;
+    .dashboard-wrapper {
+      max-width: 1000px;
+      margin: auto;
+    }
+    .navbar { 
+      background: #fff !important;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      margin-bottom: 30px;
       border-radius: 10px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-      padding: 1.5rem 2rem;
-      margin-bottom: 2rem;
     }
     .navbar-brand img { width: 40px; height: 40px; }
-    .navbar { background: #fff; }
-    @media (max-width: 700px) {
-      .dashboard-header { padding: 1rem; }
-      .upload-card, .payment-card, .downloading-card { padding: 1rem; }
+    .header-section {
+      background: #fff;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      margin-bottom: 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    h1 {
+      color: #333;
+      font-weight: 700;
+      margin: 0;
+    }
+    .user-info {
+      font-size: 14px;
+      color: #666;
+      margin-top: 5px;
+    }
+    .btn-logout {
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      border: none;
+      color: white;
+      font-weight: 600;
+    }
+    .btn-logout:hover {
+      background: linear-gradient(135deg, #f5576c 0%, #f093fb 100%);
+      color: white;
+    }
+    .card {
+      border: none;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      border-radius: 15px;
+      margin-bottom: 30px;
+      overflow: hidden;
+    }
+    .card-header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      padding: 20px 30px;
+      font-weight: 700;
+      font-size: 18px;
+    }
+    .card-body {
+      padding: 30px;
+    }
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+    }
+    .info-item {
+      padding: 15px;
+      background: #f9f9f9;
+      border-radius: 8px;
+      border-left: 4px solid #667eea;
+    }
+    .info-label {
+      font-weight: 600;
+      color: #667eea;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .info-value {
+      color: #333;
+      font-size: 16px;
+      margin-top: 8px;
+      word-break: break-word;
+    }
+    .status-badge {
+      display: inline-block;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .status-pending {
+      background: #fff3cd;
+      color: #856404;
+    }
+    .status-approved {
+      background: #d4edda;
+      color: #155724;
+    }
+    .progress-step {
+      display: flex;
+      align-items: center;
+      padding: 15px 0;
+      border-bottom: 1px solid #eee;
+    }
+    .progress-step:last-child {
+      border-bottom: none;
+    }
+    .step-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      color: white;
+      margin-right: 15px;
+      flex-shrink: 0;
+    }
+    .step-icon.completed {
+      background: #28a745;
+    }
+    .step-icon.pending {
+      background: #ffc107;
+    }
+    .step-icon.disabled {
+      background: #ccc;
+    }
+    .step-content h6 {
+      margin: 0;
+      font-weight: 600;
+      color: #333;
+    }
+    .step-content p {
+      margin: 5px 0 0 0;
+      font-size: 13px;
+      color: #666;
+    }
+    .upload-section {
+      background: #f9f9f9;
+      padding: 20px;
+      border-radius: 8px;
+      margin: 20px 0;
+    }
+    .file-input-wrapper {
+      position: relative;
+    }
+    .file-input-label {
+      display: block;
+      padding: 20px;
+      border: 2px dashed #667eea;
+      border-radius: 8px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      background: #fff;
+    }
+    .file-input-label:hover {
+      background: #f0f0f0;
+      border-color: #764ba2;
+    }
+    #passportFile, #receiptFile {
+      display: none;
+    }
+    .file-name {
+      margin-top: 10px;
+      font-size: 14px;
+      color: #666;
+    }
+    .btn-primary-grad {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border: none;
+      color: white;
+      font-weight: 600;
+    }
+    .btn-primary-grad:hover {
+      background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+      color: white;
+    }
+    .btn-success-grad {
+      background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+      border: none;
+      color: white;
+      font-weight: 600;
+    }
+    .btn-success-grad:hover {
+      background: linear-gradient(135deg, #20c997 0%, #28a745 100%);
+      color: white;
+    }
+    .alert {
+      border: none;
+      border-radius: 8px;
+    }
+    footer {
+      margin-top: 50px;
+      background-color: #0d1b2a !important;
+      color: white;
+      border-radius: 15px;
+    }
+    .loading-state {
+      text-align: center;
+      padding: 40px;
+    }
+    .spinner-large {
+      width: 50px;
+      height: 50px;
+      margin: 20px auto;
+    }
+    .modal-content {
+      border: none;
+      border-radius: 15px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    }
+    .modal-header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      padding: 25px;
+    }
+    .modal-title {
+      font-weight: 700;
+      font-size: 1.3rem;
+    }
+    .modal-body {
+      padding: 30px;
+    }
+    .payment-info-box {
+      background: linear-gradient(135deg, #f9f9f9 0%, #f0f0f0 100%);
+      padding: 20px;
+      border-radius: 10px;
+      margin: 20px 0;
+      border-left: 4px solid #667eea;
+    }
+    .amount-display {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #667eea;
+      text-align: center;
+      margin: 15px 0;
+    }
+    .success-message {
+      text-align: center;
+      padding: 30px 20px;
+      background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+      border-radius: 12px;
+      margin: 20px 0;
+    }
+    .success-icon {
+      font-size: 3rem;
+      color: #28a745;
+      margin-bottom: 15px;
+    }
+    .success-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #155724;
+      margin-bottom: 10px;
+    }
+    .success-text {
+      color: #155724;
+      font-size: 0.95rem;
+    }
+    @media (max-width: 768px) {
+      .header-section {
+        flex-direction: column;
+        gap: 20px;
+        text-align: center;
+      }
+      .info-grid {
+        grid-template-columns: 1fr;
+      }
+      .btn-logout {
+        width: 100%;
+      }
     }
   </style>
 </head>
 <body>
   <header>
-    <nav class="navbar navbar-expand-lg navbar-light bg-white position-absolute w-100 px-lg-5 px-2" style="z-index:3;">
-      <div class="container-fluid">
+    <nav class="navbar navbar-expand-lg navbar-light">
+      <div class="container-fluid px-4">
         <a class="navbar-brand d-flex align-items-center gap-2" href="index.html">
-          <img src="1000205315-removebg-preview.png" alt="SoftGap Logo" style="width:40px; height:40px;">
+          <img src="1000205315-removebg-preview.png" alt="Visa Lord Logo" style="width:40px; height:40px;">
           <span class="fw-bold">Visa Lord</span>
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse justify-content-end" id="mainNav" style="color: black;">
-          <ul class="navbar-nav mb-2 mb-lg-0 gap-lg-5">
+        <div class="collapse navbar-collapse justify-content-end" id="mainNav">
+          <ul class="navbar-nav gap-lg-5">
             <li class="nav-item">
               <a class="nav-link" href="index.html">Home</a>
             </li>
@@ -58,232 +321,544 @@
               <a class="nav-link" href="contact.html">Contact Us</a>
             </li>
           </ul>
-          <div id="navbarUser" class="ms-3"></div>
         </div>
       </div>
     </nav>
   </header>
-  <div class="container py-5">
-    <div class="dashboard-header d-flex justify-content-between align-items-center mb-4">
-      <h2 class="fw-bold">Visa Application Dashboard</h2>
-      <button id="logoutBtn" class="btn btn-danger">Logout</button>
-    </div>
 
-    <div id="applicationStatus" class="alert d-none"></div>
-
-    <div id="applicationDetails" class="card d-none">
-      <div class="card-body">
-        <h5 class="card-title">Application Information</h5>
-        <p><strong>Full Name:</strong> <span id="fullName"></span></p>
-        <p><strong>Visa Type:</strong> <span id="visaType"></span></p>
-        <p><strong>Country:</strong> <span id="country"></span></p>
-        <p><strong>Status:</strong> <span id="statusText"></span></p>
-        <p><strong>Traveling Date:</strong> <span id="travelingDate"></span></p>
-        <p><strong>Returning Date:</strong> <span id="returningDate"></span></p>
+  <div class="dashboard-wrapper">
+    <!-- Loading State -->
+    <div id="loadingState" class="loading-state">
+      <div class="spinner-border spinner-large text-white" role="status">
+        <span class="visually-hidden">Loading...</span>
       </div>
+      <p class="text-white mt-3">Loading your dashboard...</p>
     </div>
 
-    <div id="approvedActions" class="d-none">
-      <div class="upload-card">
-        <h5 class="text-primary">Step 1: Upload Documents</h5>
-        <p id="uploadMessage" class="text-muted">Please upload both files before continuing.</p>
-
-        <div class="mb-3">
-          <label for="photoFile" class="form-label">Passport Photograph</label>
-          <input class="form-control" type="file" id="photoFile" accept=".jpg,.jpeg,.png">
+    <!-- Data State -->
+    <div id="dataState" style="display: none;">
+      <!-- Header -->
+      <div class="header-section">
+        <div>
+          <h1><i class="bi bi-speedometer2"></i> Your Dashboard</h1>
+          <div class="user-info" id="userEmail">Loading...</div>
         </div>
+        <button class="btn btn-logout" id="logoutBtn">
+          <i class="bi bi-box-arrow-right"></i> Logout
+        </button>
+      </div>
 
-        <div class="mb-3">
-          <label for="passportFile" class="form-label">International Passport</label>
-          <input class="form-control" type="file" id="passportFile" accept=".pdf,.jpg,.jpeg,.png">
+      <!-- Application Information Card -->
+      <div class="card">
+        <div class="card-header">
+          <i class="bi bi-file-earmark-text"></i> Application Information
         </div>
+        <div class="card-body">
+          <div class="info-grid">
+            <div class="info-item">
+              <div class="info-label">Full Name</div>
+              <div class="info-value" id="fullName">-</div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">Email Address</div>
+              <div class="info-value" id="email">-</div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">Phone Number</div>
+              <div class="info-value" id="phone">-</div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">Date of Birth</div>
+              <div class="info-value" id="dob">-</div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">Marital Status</div>
+              <div class="info-value" id="maritalStatus">-</div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">Nationality</div>
+              <div class="info-value" id="nationality">-</div>
+            </div>
+            <div class="info-item" style="grid-column: 1 / -1;">
+              <div class="info-label">Address</div>
+              <div class="info-value" id="address">-</div>
+            </div>
 
-        <button id="uploadBothBtn" class="btn btn-success mt-2" disabled>Upload Documents</button>
-        <div id="uploadStatus" class="mt-2 text-info"></div>
+            <div class="info-item">
+              <div class="info-label">Occupation</div>
+              <div class="info-value" id="occupation">-</div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">Current Country</div>
+              <div class="info-value" id="currentResidenceCountry">-</div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">Province / State</div>
+              <div class="info-value" id="provinceState">-</div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">Country Applying For</div>
+              <div class="info-value" id="countryToVisa">-</div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">Visa Type</div>
+              <div class="info-value" id="visaType">-</div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">ID Type</div>
+              <div class="info-value" id="idType">-</div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">ID Number</div>
+              <div class="info-value" id="idNumber">-</div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">Staff ID</div>
+              <div class="info-value" id="staffId">-</div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">Application Status</div>
+              <div class="info-value">
+                <span id="statusBadge" class="status-badge status-pending">Pending</span>
+              </div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">Submitted At</div>
+              <div class="info-value" id="submittedAt">-</div>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div class="downloading-card" id="downloadingcard">
-        <h5 class="text-primary">Download your Visa Approval Letter</h5>
-        <p class="text-muted">This letter will be available when the admin uploads it for you.</p>
-        <button id="downloadApprovalLetterBtn" class="btn btn-primary btn-lg" style="display:none">Download Approval Letter</button>
-        <span id="downloadApprovalLetterMsg" class="text-info"></span>
+      <!-- Application Progress Card -->
+      <div class="card">
+        <div class="card-header">
+          <i class="bi bi-list-check"></i> Application Progress
+        </div>
+        <div class="card-body">
+          <div class="progress-step">
+            <div class="step-icon completed">1</div>
+            <div class="step-content">
+              <h6>Application Submitted</h6>
+              <p>Your application has been submitted successfully</p>
+            </div>
+          </div>
+          <div class="progress-step" id="step2">
+            <div class="step-icon pending">2</div>
+            <div class="step-content">
+              <h6>Upload Documents</h6>
+              <p id="step2-status">Waiting for document upload</p>
+            </div>
+          </div>
+          <div class="progress-step" id="step3">
+            <div class="step-icon disabled">3</div>
+            <div class="step-content">
+              <h6>Admin Review</h6>
+              <p>Your documents will be reviewed by our admin team</p>
+            </div>
+          </div>
+          <div class="progress-step" id="step5">
+            <div class="step-icon disabled">5</div>
+            <div class="step-content">
+              <h6>Download Approval Letter</h6>
+              <p>Receive your visa approval letter</p>
+            </div>
+          </div>
+          <div class="progress-step" id="step4">
+            <div class="step-icon disabled">4</div>
+            <div class="step-content">
+              <h6>Make Payment</h6>
+              <p>Complete payment to finalize your application</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Upload Documents Card -->
+      <div class="card" id="uploadCard" style="display: none;">
+        <div class="card-header">
+          <i class="bi bi-cloud-arrow-up"></i> Upload Documents
+        </div>
+        <div class="card-body">
+          <div class="upload-section">
+            <label class="form-label">International Passport <span class="progress-badge badge-pending" id="passportBadge">Pending</span></label>
+            <div class="file-input-wrapper">
+              <label for="passportFile" class="file-input-label">
+                <i class="bi bi-file-earmark-pdf" style="font-size: 2rem; color: #667eea;"></i>
+                <p style="margin-top: 10px; margin-bottom: 0;">Click to upload or drag and drop</p>
+                <small style="color: #999;">PDF, JPG, or PNG (Max 10MB)</small>
+              </label>
+              <input 
+                class="form-control" 
+                type="file" 
+                id="passportFile" 
+                accept=".pdf,.jpg,.jpeg,.png"
+              >
+              <div id="passportFileName" class="file-name"></div>
+            </div>
+          </div>
+          <button id="uploadBtn" class="btn btn-primary-grad mt-3" disabled>
+            <i class="bi bi-upload"></i> Upload Document
+          </button>
+          <div id="uploadStatus" class="mt-3"></div>
+        </div>
+      </div>
+
+      <!-- Download Approval Letter Card -->
+      <div class="card" id="downloadCard" style="display: none;">
+        <div class="card-header">
+          <i class="bi bi-download"></i> Download Approval Letter
+        </div>
+        <div class="card-body">
+          <p class="text-muted">Your visa approval letter is ready for download.</p>
+          <button id="downloadApprovalLetterBtn" class="btn btn-success-grad btn-lg">
+            <i class="bi bi-file-earmark-arrow-down"></i> Download Approval Letter
+          </button>
+          <div id="downloadStatus" class="mt-3"></div>
+        </div>
+      </div>
+
+      <!-- Payment Card -->
+      <div class="card" id="paymentCard" style="display: none;">
+        <div class="card-header">
+          <i class="bi bi-credit-card"></i> Make Payment
+        </div>
+        <div class="card-body">
+          <p class="text-muted">Your documents have been submitted. Please make the payment to finalize your application.</p>
+          
+          <div class="payment-info-box">
+            <p style="margin: 0; color: #666; font-size: 0.9rem;">Amount to Pay</p>
+            <div class="amount-display" id="displayAmount">$0.00</div>
+            <p style="margin: 0; color: #999; font-size: 0.85rem; text-align: center;">Contact us if you need payment plan options</p>
+          </div>
+
+          <button id="makePaymentBtn" class="btn btn-primary-grad btn-lg w-100" disabled>
+            <i class="bi bi-link-45deg"></i> <span id="paymentBtnText">Go to Payment</span>
+          </button>
+          <div id="paymentStatus" class="mt-3"></div>
+        </div>
       </div>
     </div>
 
-    <div class="payment-card" id="paymentCard">
-      <h5 class="text-primary">Step 3: Make Payment</h5>
-      <p class="text-muted">Your documents have been submitted. Please make the payment to finalize your application.</p>
-      <button id="makePaymentBtn" class="btn btn-primary btn-lg" disabled>Make Payment</button>
-    </div>
-
-    <div id="continueLink" class="mt-4 d-none">
-      <a href="application_form.html" class="btn btn-primary">Continue Application</a>
+    <!-- Error State -->
+    <div id="errorState" style="display: none;">
+      <div class="card">
+        <div class="card-body">
+          <div class="alert alert-danger">
+            <h4 class="alert-heading"><i class="bi bi-exclamation-triangle"></i> Error</h4>
+            <p id="errorMessage"></p>
+            <hr>
+            <p class="mb-0"><a href="application_form.html" class="btn btn-primary">Go to Application Form</a></p>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
-<footer style="background-color: #0d1b2a; color: white;" class="pt-5 pb-0">
-  <hr style="border-bottom: 10px solid white;">
-  <div class="container">
-    <div class="row footer-section text-center text-lg-start">
-      <div class="col-lg-6 mb-4 mb-lg-0">
-        <h4 class="text-info">OUR SERVICES</h4>
-        <ul class="list-unstyled">
-          <li>Student Visa</li>
-          <li>Working Visa</li>
-          <li>Tourism Visa</li>
-          <li>Conference Visa</li>
-        </ul>
-      </div>
-      <div class="col-lg-6">
-        <h4 class="text-info">CONTACT US</h4>
-        <ul class="list-unstyled">
-          <li>contact@visalord.online</li>
-          <li>+13347691945</li>
-          <li>www.visahub.onine</li>
-          <li style="margin-top: 20px;"><strong>New York (Regional Office): <br> </strong>448 Broadway, 2nd Floor, New York, NY 10013, United States</li>
-          <li ><strong>Texas (Regional Office): <br></strong>11823 North Fwy, Suite 218, Houston, TX 77060, United States</li>
-          <li><strong>Dubai (Global Delivery Center): <br></strong>Office # 504-724, Al Muraqabat Deira, Dubai, United Arab Emirates</li>
 
-        </ul>
+  <footer style="background-color: #0d1b2a; color: white;" class="pt-5 pb-0">
+    <hr style="border-bottom: 10px solid white;">
+    <div class="container">
+      <div class="row footer-section text-center text-lg-start">
+        <div class="col-lg-6 mb-4 mb-lg-0">
+          <h4 class="text-info">OUR SERVICES</h4>
+          <ul class="list-unstyled">
+            <li>Student Visa</li>
+            <li>Working Visa</li>
+            <li>Tourism Visa</li>
+            <li>Conference Visa</li>
+          </ul>
+        </div>
+        <div class="col-lg-6">
+          <h4 class="text-info">CONTACT US</h4>
+          <ul class="list-unstyled">
+            <li>contact@visalord.online</li>
+            <li>+16616187032</li>
+            <li>www.visahub.onine</li>
+            <li style="margin-top: 20px;"><strong>New York (Regional Office): <br> </strong>448 Broadway, 2nd Floor, New York, NY 10013, United States</li>
+            <li><strong>Texas (Regional Office): <br></strong>11823 North Fwy, Suite 218, Houston, TX 77060, United States</li>
+            <li><strong>Dubai (Global Delivery Center): <br></strong>Office # 504-724, Al Muraqabat Deira, Dubai, United Arab Emirates</li>
+          </ul>
+        </div>
       </div>
+      <div style="background-color: #1b263b;" class="footer-bottom text-center py-3 mt-4">
+        © 2025 Visa Hub. All rights reserved.
+      </div>
+      <a style="text-decoration: none; color: #000;" href="admin_panel.html">ad</a>
     </div>
-    <div style="background-color: #1b263b;" class="footer-bottom text-center py-3 mt-4">
-      © 2025 Visa Hub. All rights reserved.
-    </div>
-    <a style="text-decoration: none; color: #000;" href="admin_panel.html">ad</a>
-  </div>
-</footer>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script>
     const firebaseConfig = {
       apiKey: "AIzaSyDO5Bpeg0Ewg6lUzbIaI-Kp4wC9ET6OQfE",
       authDomain: "visasponsor-e62c2.firebaseapp.com",
       projectId: "visasponsor-e62c2",
-      storageBucket: "visasponsor-e62c2.appspot.com",
+      storageBucket: "visasponsor-e62c2.firebasestorage.app",
       messagingSenderId: "179101134570",
       appId: "1:179101134570:web:bea801f12c1a620717b193",
       measurementId: "G-NE7T0PPG6K"
     };
+
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.firestore();
 
-    const photoInput = document.getElementById('photoFile');
-    const passportInput = document.getElementById('passportFile');
-    const uploadBtn = document.getElementById('uploadBothBtn');
-    const downloadApprovalLetterBtn = document.getElementById('downloadApprovalLetterBtn');
-    photoInput.addEventListener('change', checkFilesSelected);
-    passportInput.addEventListener('change', checkFilesSelected);
+    let currentUser = null;
+    let paymentAmount = 0;
+    let paymentLink = "";
 
-    function checkFilesSelected() {
-      uploadBtn.disabled = !(photoInput.files.length && passportInput.files.length);
+    const loadingState = document.getElementById("loadingState");
+    const dataState = document.getElementById("dataState");
+    const errorState = document.getElementById("errorState");
+
+    function hideAllStates() {
+      loadingState.style.display = "none";
+      dataState.style.display = "none";
+      errorState.style.display = "none";
     }
 
-    uploadBtn.addEventListener('click', async () => {
-      const user = auth.currentUser;
-      const photoFile = photoInput.files[0];
-      const passportFile = passportInput.files[0];
-      const statusDiv = document.getElementById('uploadStatus');
+    function showLoadingState() {
+      hideAllStates();
+      loadingState.style.display = "block";
+    }
 
-      statusDiv.textContent = 'Uploading...';
-      statusDiv.classList.replace('text-danger', 'text-info');
+    function showDataState() {
+      hideAllStates();
+      dataState.style.display = "block";
+    }
+
+    function showErrorState(error) {
+      hideAllStates();
+      errorState.style.display = "block";
+      document.getElementById("errorMessage").innerText = error || "An error occurred.";
+    }
+
+    function formatValue(value) {
+      if (!value) return "-";
+      if (typeof value === 'string') return value.trim() || "-";
+      return value;
+    }
+
+    function updateProgressStep(stepNum, status) {
+      const step = document.getElementById(`step${stepNum}`);
+      if (!step) return;
+      const icon = step.querySelector('.step-icon');
+      icon.className = `step-icon ${status}`;
+      icon.innerHTML = status === 'completed' ? '<i class="bi bi-check-lg"></i>' : stepNum;
+    }
+
+    // Passport file handling
+    const passportInput = document.getElementById('passportFile');
+    const uploadBtn = document.getElementById('uploadBtn');
+    const passportLabel = document.querySelector('.file-input-label');
+
+    passportInput.addEventListener('change', function() {
+      if (this.files.length > 0) {
+        document.getElementById('passportFileName').innerHTML = `<span style="color: #28a745;"><i class="bi bi-check"></i> ${this.files[0].name}</span>`;
+        uploadBtn.disabled = false;
+      }
+    });
+
+    passportLabel.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      passportLabel.style.background = '#f0f0f0';
+    });
+
+    passportLabel.addEventListener('dragleave', () => {
+      passportLabel.style.background = '#fff';
+    });
+
+    passportLabel.addEventListener('drop', (e) => {
+      e.preventDefault();
+      passportLabel.style.background = '#fff';
+      if (e.dataTransfer.files.length > 0) {
+        passportInput.files = e.dataTransfer.files;
+        passportInput.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+    });
+
+    uploadBtn.addEventListener('click', async () => {
+      const file = passportInput.files[0];
+      if (!file) {
+        alert('Please select a file');
+        return;
+      }
+
+      if (file.size > 10 * 1024 * 1024) {
+        alert('File size must be less than 10MB');
+        return;
+      }
+
+      const uploadStatus = document.getElementById('uploadStatus');
+      uploadStatus.innerHTML = '<div class="alert alert-info"><i class="bi bi-hourglass-split"></i> Uploading...</div>';
+      uploadBtn.disabled = true;
 
       try {
-        const uploadToCloudinary = async (file) => {
-          const formData = new FormData();
+        const formData = new FormData();
         formData.append('file', file);
-        formData.append('upload_preset', 'visa_public_uploads'); // use your new preset name
-        const res = await axios.post('https://api.cloudinary.com/v1_1/deqadda2e/upload', formData);
-        console.log(res.data.secure_url); // This is your public download link!
-        };
+        formData.append('upload_preset', 'visa_public_uploads');
 
-        const photoUrl = await uploadToCloudinary(photoFile);
-        const passportUrl = await uploadToCloudinary(passportFile);
+        const response = await axios.post(
+          'https://api.cloudinary.com/v1_1/deqadda2e/upload',
+          formData
+        );
 
-        await db.collection("visaApplications").doc(user.uid).update({
-          photoUrl,
-          passportUrl,
+        await db.collection("visaApplications").doc(currentUser.uid).update({
+          passportUrl: response.data.secure_url,
           updatedAt: firebase.firestore.FieldValue.serverTimestamp()
         });
 
-        statusDiv.textContent = 'Upload successful!';
-        statusDiv.classList.replace('text-info', 'text-success');
-
-        photoInput.disabled = true;
+        uploadStatus.innerHTML = '<div class="alert alert-success"><i class="bi bi-check-circle"></i> Upload successful!</div>';
+        document.getElementById('passportBadge').className = 'progress-badge badge-success';
+        document.getElementById('passportBadge').textContent = 'Uploaded';
         passportInput.disabled = true;
         uploadBtn.disabled = true;
-
         document.getElementById('makePaymentBtn').disabled = false;
+        updateProgressStep(2, 'completed');
+        document.getElementById('paymentCard').style.display = 'block';
       } catch (error) {
-        console.error(error);
-        statusDiv.textContent = 'Upload failed. Try again.';
-        statusDiv.classList.replace('text-info', 'text-danger');
+        uploadStatus.innerHTML = `<div class="alert alert-danger"><i class="bi bi-exclamation-circle"></i> Upload failed: ${error.message}</div>`;
+        uploadBtn.disabled = false;
       }
     });
 
     auth.onAuthStateChanged(async user => {
-      if (!user) return location.href = 'index.html';
-      const roleDoc = await db.collection("userRoles").doc(user.uid).get();
-      if (!roleDoc.exists || roleDoc.data().role !== 'user') {
-        alert("Access denied: Not a regular user.");
-        await auth.signOut();
-        return location.href = 'index.html';
+      if (!user) {
+        window.location.href = "index.html";
+        return;
       }
 
-      const doc = await db.collection("visaApplications").doc(user.uid).get();
-      const data = doc.data();
-      document.getElementById('applicationDetails').classList.remove('d-none');
-      document.getElementById('fullName').textContent = `${data.firstname || ''} ${data.othername || ''} ${data.surname || ''}`.trim();
-      document.getElementById('visaType').textContent = data.visaType || 'N/A';
-      document.getElementById('country').textContent = data.countryToVisa || 'N/A';
-      document.getElementById('statusText').textContent = data.status || 'N/A';
-      document.getElementById('travelingDate').textContent = data.travelingDate?.toDate?.().toLocaleDateString() || 'N/A';
-      document.getElementById('returningDate').textContent = data.returningDate?.toDate?.().toLocaleDateString() || 'N/A';
+      currentUser = user;
+      showLoadingState();
+      document.getElementById("userEmail").innerText = `Logged in as: ${user.email}`;
 
-      if (data.status === 'approved') {
-        document.getElementById('approvedActions').classList.remove('d-none');
-        document.getElementById('uploadMessage').textContent = 'You may now upload your documents.';
-        if (data.photoUrl && data.passportUrl) {
-          document.getElementById('uploadStatus').textContent = 'Documents already uploaded.';
-          uploadBtn.disabled = true;
-          document.getElementById('makePaymentBtn').disabled = false;
-        } else {
-          document.getElementById('makePaymentBtn').disabled = true;
+      try {
+        const roleDoc = await db.collection("userRoles").doc(user.uid).get();
+        if (!roleDoc.exists || roleDoc.data().role !== 'user') {
+          showErrorState("Access denied: Not a regular user.");
+          return;
         }
-        if (data.paymentStatus === 'paid') {
-          document.getElementById('paymentCard').innerHTML = `<h5 class="text-primary">Step 2: Make Payment</h5><p class="text-success fw-bold">Payment confirmed.</p>`;
+
+        const appDoc = await db.collection("visaApplications").doc(user.uid).get();
+        if (!appDoc.exists) {
+          showErrorState("No application data found. Please complete the application form first.");
+          return;
         }
-        // Show approval letter download button if admin uploaded
+
+        const data = appDoc.data();
+        console.log("Application data:", data);
+
+        paymentAmount = data.paymentAmount || 0;
+        paymentLink = data.paymentLink || "";
+
+        // Display payment amount
+        document.getElementById('displayAmount').innerText = paymentAmount ? `$${parseFloat(paymentAmount).toFixed(2)}` : '$0.00';
+
+        const fields = {
+          'fullName': `${formatValue(data.firstname)} ${formatValue(data.othername)} ${formatValue(data.surname)}`.trim(),
+          'email': formatValue(data.email),
+          'phone': formatValue(data.phone),
+          'address': formatValue(data.address),
+          'dob': data.dob ? new Date(data.dob).toLocaleDateString() : "-",
+          'maritalStatus': formatValue(data.maritalStatus),
+          'occupation': formatValue(data.occupation),
+          'nationality': formatValue(data.nationality),
+          'currentResidenceCountry': formatValue(data.currentResidenceCountry),
+          'provinceState': formatValue(data.provinceState),
+          'countryToVisa': formatValue(data.countryToVisa),
+          'visaType': formatValue(data.visaType),
+          'idType': formatValue(data.idType),
+          'idNumber': formatValue(data.idNumber),
+          'staffId': formatValue(data.staffId),
+          'submittedAt': data.submittedAt ? data.submittedAt.toDate().toLocaleString() : "-"
+        };
+
+        for (const [key, value] of Object.entries(fields)) {
+          const el = document.getElementById(key);
+          if (el) el.innerText = value;
+        }
+
+        const statusMap = {
+          'pending': 'status-pending',
+          'approved': 'status-approved',
+          'rejected': 'status-rejected'
+        };
+        const statusEl = document.getElementById('statusBadge');
+        statusEl.className = `status-badge ${statusMap[data.status] || 'status-pending'}`;
+        statusEl.innerText = (data.status || 'pending').toUpperCase();
+
+        updateProgressStep(1, 'completed');
+
+        if (data.status === 'approved') {
+          document.getElementById('uploadCard').style.display = 'block';
+          updateProgressStep(2, data.passportUrl ? 'completed' : 'pending');
+
+          if (data.passportUrl) {
+            document.getElementById('passportBadge').className = 'progress-badge badge-success';
+            document.getElementById('passportBadge').textContent = 'Uploaded';
+            document.getElementById('passportFileName').innerHTML = '<span style="color: #28a745;"><i class="bi bi-check-circle"></i> Document uploaded</span>';
+            document.getElementById('uploadBtn').disabled = true;
+            document.getElementById('passportFile').disabled = true;
+            document.getElementById('makePaymentBtn').disabled = false;
+            updateProgressStep(3, 'pending');
+          } else {
+            document.getElementById('makePaymentBtn').disabled = true;
+          }
+        }
+
+        if (data.passportUrl) {
+          document.getElementById('paymentCard').style.display = 'block';
+          if (data.paymentStatus === 'paid') {
+            document.getElementById('paymentStatus').innerHTML = `
+              <div class="success-message">
+                <div class="success-icon">
+                  <i class="bi bi-check-circle"></i>
+                </div>
+                <div class="success-title">✓ Your Visa is On The Way!</div>
+                <div class="success-text">
+                  Your application is being processed. Your approval letter will be sent to your email shortly.
+                </div>
+              </div>
+            `;
+            document.getElementById('makePaymentBtn').disabled = true;
+            updateProgressStep(4, 'completed');
+          }
+        }
+
         if (data.approvalLetterUrl) {
-          downloadApprovalLetterBtn.style.display = 'inline-block';
-          document.getElementById('downloadApprovalLetterMsg').textContent = "";
-          // Set up automatic download
-          downloadApprovalLetterBtn.onclick = function () {
-            // Extract filename from URL or use a default
+          document.getElementById('downloadCard').style.display = 'block';
+          updateProgressStep(5, 'completed');
+          document.getElementById('downloadApprovalLetterBtn').onclick = function() {
             let filename = "Visa_Approval_Letter.pdf";
-            try {
-              const urlParts = data.approvalLetterUrl.split('/');
-              const lastPart = urlParts[urlParts.length - 1];
-              filename = lastPart.split('?')[0];
-            } catch (e) {}
             const a = document.createElement('a');
             a.href = data.approvalLetterUrl;
             a.download = filename;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
-          }
-        } else {
-          downloadApprovalLetterBtn.style.display = 'none';
-          document.getElementById('downloadApprovalLetterMsg').textContent = "Approval letter not uploaded yet. Please check back soon.";
+          };
         }
-      } else {
-        document.getElementById('approvedActions').classList.add('d-none');
+
+        showDataState();
+      } catch (error) {
+        console.error("Error:", error);
+        showErrorState(error.message);
       }
     });
 
-    document.getElementById("logoutBtn").onclick = async () => {
+    // Payment button click handler
+    document.getElementById('makePaymentBtn').addEventListener('click', () => {
+      if (paymentLink) {
+        window.location.href = paymentLink;
+      } else {
+        alert('Payment link not yet configured. Please contact support.');
+      }
+    });
+
+    document.getElementById('logoutBtn').addEventListener('click', async () => {
       await auth.signOut();
-      window.location.href = "index.html";
-    };
+      window.location.href = 'index.html';
+    });
   </script>
 </body>
 </html>
